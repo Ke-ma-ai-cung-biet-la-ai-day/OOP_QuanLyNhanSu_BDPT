@@ -1,30 +1,30 @@
-#ifndef NHANVIENVANPHONG_H
-#define NHANVIENVANPHONG_H
+#ifndef NHANVIENSANXUAT_H
+#define NHANVIENSANXUAT_H
 
 #include "NhanVien.h"
 
-class NhanVienVanPhong : public NhanVien {
+class NhanVienSanXuat : public NhanVien {
 private:
-    int soNgayLamViec_;     // Số ngày làm việc trong tháng
-    double donGiaNgay_;     // Đơn giá lương theo ngày
+    int soSanPham_;         // Số lượng sản phẩm hoàn thành
+    double donGiaSanPham_;  // Đơn giá cho mỗi sản phẩm
 
 public:
     // 1. Constructors & Destructor
-    NhanVienVanPhong();
-    NhanVienVanPhong(const std::string& maNV, 
-                     const std::string& hoTen, 
-                     const std::string& ngaySinh, 
-                     const std::string& diaChi, 
-                     int soNgayLamViec, 
-                     double donGiaNgay);
-    virtual ~NhanVienVanPhong();
+    NhanVienSanXuat();
+    NhanVienSanXuat(const std::string& maNV, 
+                    const std::string& hoTen, 
+                    const std::string& ngaySinh, 
+                    const std::string& diaChi, 
+                    int soSanPham, 
+                    double donGiaSanPham);
+    virtual ~NhanVienSanXuat();
 
     // 2. Getters & Setters
-    int getSoNgayLamViec() const;
-    void setSoNgayLamViec(int soNgayLamViec);
+    int getSoSanPham() const;
+    void setSoSanPham(int soSanPham);
 
-    double getDonGiaNgay() const;
-    void setDonGiaNgay(double donGiaNgay);
+    double getDonGiaSanPham() const;
+    void setDonGiaSanPham(double donGiaSanPham);
 
     // 3. Ghi đè các phương thức đa hình (Polymorphism)
     double TinhLuong() override;
@@ -33,4 +33,4 @@ public:
     void HienThiThongTin() const override;
 };
 
-#endif // NHANVIENVANPHONG_H
+#endif // NHANVIENSANXUAT_H
