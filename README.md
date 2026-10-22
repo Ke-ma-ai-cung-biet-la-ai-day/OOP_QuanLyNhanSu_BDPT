@@ -6,27 +6,17 @@ CÂY THƯ MỤC TRONG GITHUB:
 OOP_QuanLyNhanSu_BDPT/
 |                   
 ├── include/                   # Chứa các file header (.h)
-│   ├── BST.h
-│   ├── ChuyenBay.h
-│   ├── FileStore.h
-│   ├── KhachHang.h
-│   ├── LinkedList.h
-│   ├── MayBay.h
-│   ├── ThongKe.h
-│   ├── UI_Menu.h
-│   ├── Validation.h
-│   └── Ve.h
+│   ├── NhanVien.h
+│   ├── NhanVienSanXuat.h
+│   ├── NhanVienVanPhong.h
+│   └── QuanLy.h
 │
 ├── src/                       # Chứa mã nguồn cài đặt (.cpp)
-│   ├── ChuyenBay.cpp
-│   ├── FileStore.cpp
-│   ├── KhachHang.cpp
-│   ├── main.cpp
-│   ├── MayBay.cpp
-│   ├── ThongKe.cpp
-│   ├── UI_Menu.cpp
-│   ├── Validation.cpp
-│   └── Ve.cpp
+│   ├── NhanVien.cpp
+│   ├── NhanVienSanXuat.cpp
+│   ├── NhanVienVanPhong.cpp
+│   ├── QuanLy.cpp
+│   └── main.cpp
 │
 ├── .gitignore
 └── README.md
