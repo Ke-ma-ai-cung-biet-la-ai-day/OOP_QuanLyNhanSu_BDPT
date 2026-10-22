@@ -1,0 +1,13 @@
+# File thực thi và mã máy
+*.exe
+*.out
+*.o
+*.obj
+~$*
+
+# Thư mục build của IDE (Visual Studio Code, Visual Studio, CLion)
+.vscode/
+.vs/
+.idea/
+build/
+bin/
