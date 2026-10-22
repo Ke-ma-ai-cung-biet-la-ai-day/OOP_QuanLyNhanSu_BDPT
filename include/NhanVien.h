@@ -11,7 +11,6 @@ private:
     std::string hoTen_;    
     std::string ngaySinh_; 
     std::string diaChi_;   
-
 public:
     NhanVien();
     NhanVien(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi);
