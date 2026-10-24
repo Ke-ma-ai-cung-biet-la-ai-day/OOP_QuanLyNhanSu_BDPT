@@ -1,21 +1,31 @@
 #include "QuanLyNhanSu.h"
 
-// --- Constructor & Destructor ---
+// =============================================================================
+// 1. KHỞI TẠO, HỦY VÀ QUẢN LÝ BỘ NHỚ LÕI
+// =============================================================================
+
 QuanLyNhanSu::QuanLyNhanSu() {}
 
 QuanLyNhanSu::~QuanLyNhanSu() {
     GiaiPhongBoNho();
 }
 
-// --- Quản lý bộ nhớ con trỏ an toàn (Tránh Memory Leak) ---
+// Giải phóng toàn bộ bộ nhớ Heap đã cấp phát cho con trỏ NhanVien*
 void QuanLyNhanSu::GiaiPhongBoNho() {
     for (NhanVien* nv : dsNhanVien_) {
-        delete nv; // Giải phóng vùng nhớ Heap đã cấp phát qua 'new'
+        delete nv; // Kích hoạt Virtual Destructor đa hình
     }
-    dsNhanVien_.clear(); // Xóa các con trỏ rác khỏi vector
+    dsNhanVien_.clear();
 }
 
-// Kiểm tra trùng Mã Nhân Viên
+// Thêm con trỏ nhân viên vào mảng vector quản lý
+void QuanLyNhanSu::ThemNhanVien(NhanVien* nv) {
+    if (nv != nullptr) {
+        dsNhanVien_.push_back(nv);
+    }
+}
+
+// Kiểm tra trùng Mã nhân viên trong danh sách
 bool QuanLyNhanSu::KiemTraTrungMa(const std::string& maNV) const {
     for (const NhanVien* nv : dsNhanVien_) {
         if (nv->getMaNV() == maNV) {
@@ -25,12 +35,9 @@ bool QuanLyNhanSu::KiemTraTrungMa(const std::string& maNV) const {
     return false;
 }
 
-// Thêm con trỏ nhân viên vào vector
-void QuanLyNhanSu::ThemNhanVien(NhanVien* nv) {
-    if (nv != nullptr) {
-        dsNhanVien_.push_back(nv);
-    }
-}
+// =============================================================================
+// 2. THỰC THI CÁC CHỨC NĂNG THEO THỨ TỰ MENU
+// =============================================================================
 
 // --- OPTION 1: Nhập / Thêm mới nhân viên ---
 void QuanLyNhanSu::NhapDanhSach() {
@@ -39,7 +46,7 @@ void QuanLyNhanSu::NhapDanhSach() {
     std::cout << "1. Nhan vien Van phong\n";
     std::cout << "2. Nhan vien San xuat\n";
     std::cout << "3. Quan ly (Cap cao)\n";
-    std::cout << "Chon (1-3): ";
+    std::cout << "Chon loai (1-3): ";
     std::cin >> loai;
 
     if (loai < 1 || loai > 3) {
@@ -52,7 +59,7 @@ void QuanLyNhanSu::NhapDanhSach() {
     else if (loai == 2) nv = new NhanVienSanXuat();
     else if (loai == 3) nv = new QuanLy();
 
-    // Nhập dữ liệu và kiểm tra bẫy trùng mã
+    // Nhập Mã NV và bẫy lỗi trùng mã
     std::string maTmp;
     while (true) {
         std::cout << "Nhap Ma Nhan Vien: ";
@@ -65,7 +72,7 @@ void QuanLyNhanSu::NhapDanhSach() {
         }
     }
 
-    // Gọi hàm nhập riêng của từng lớp con
+    // Nhập thông tin chi tiết qua toán tử cin >> quá tải
     std::cin >> *nv; 
     ThemNhanVien(nv);
     std::cout << "-> Them nhan vien moi thanh cong!\n";
@@ -91,7 +98,7 @@ void QuanLyNhanSu::XuatDanhSach() const {
     std::cout << std::string(136, '-') << "\n";
 
     for (const NhanVien* nv : dsNhanVien_) {
-        std::cout << *nv << "\n"; // Quá tải toán tử << gọi hàm xuất đa hình
+        std::cout << *nv << "\n"; // Lời gọi đa hình qua cout <<
     }
 
     std::cout << std::string(136, '=') << "\n";
@@ -171,25 +178,61 @@ bool QuanLyNhanSu::XoaNhanVienTheoMa(const std::string& maNV) {
     return false;
 }
 
-// --- OPTION 5: Sắp xếp lương giảm dần (Sử dụng std::sort và biểu thức Lambda) ---
-void QuanLyNhanSu::SapXepLuongGiamDan() {
+// --- OPTION 5: Sắp xếp danh sách đa tiêu chí (Dùng std::sort & Lambda) ---
+void QuanLyNhanSu::SapXepMenu() {
     if (dsNhanVien_.empty()) {
-        std::cout << "\n-> Danh sach rong, khong can sap xep!\n";
+        std::cout << "\n-> Danh sach rong, khong the sap xep!\n";
         return;
     }
 
-    std::sort(dsNhanVien_.begin(), dsNhanVien_.end(), [](const NhanVien* a, const NhanVien* b) {
-        return a->TinhLuong() > b->TinhLuong(); // Đa hình gọi TinhLuong()
-    });
+    int chon = 0;
+    std::cout << "\n================ CHON TIEU CHI SAP XEP ================\n";
+    std::cout << "1. Luong Thuc Nhan GIAM DAN (Mac dinh)\n";
+    std::cout << "2. Luong Thuc Nhan TANG DAN\n";
+    std::cout << "3. Ma Nhan Vien (A -> Z)\n";
+    std::cout << "4. Ho va Ten (A -> Z)\n";
+    std::cout << "Chon tiêu chi (1-4): ";
+    std::cin >> chon;
 
-    std::cout << "\n-> Da sap xep danh sach theo thuc nhan luong GIAM DAN thanh cong!\n";
+    switch (chon) {
+        case 1:
+            std::sort(dsNhanVien_.begin(), dsNhanVien_.end(), [](const NhanVien* a, const NhanVien* b) {
+                return a->TinhLuong() > b->TinhLuong(); // Lời gọi đa hình TinhLuong()
+            });
+            std::cout << "-> Da sap xep danh sach theo Luong Thuc Nhan GIAM DAN!\n";
+            break;
+        case 2:
+            std::sort(dsNhanVien_.begin(), dsNhanVien_.end(), [](const NhanVien* a, const NhanVien* b) {
+                return a->TinhLuong() < b->TinhLuong();
+            });
+            std::cout << "-> Da sap xep danh sach theo Luong Thuc Nhan TANG DAN!\n";
+            break;
+        case 3:
+            std::sort(dsNhanVien_.begin(), dsNhanVien_.end(), [](const NhanVien* a, const NhanVien* b) {
+                return a->getMaNV() < b->getMaNV();
+            });
+            std::cout << "-> Da sap xep danh sach theo Ma NV (A -> Z)!\n";
+            break;
+        case 4:
+            std::sort(dsNhanVien_.begin(), dsNhanVien_.end(), [](const NhanVien* a, const NhanVien* b) {
+                return a->getHoTen() < b->getHoTen();
+            });
+            std::cout << "-> Da sap xep danh sach theo Ho va Ten (A -> Z)!\n";
+            break;
+        default:
+            std::cout << "-> Lua chon khong hop le! Huy thao tac sap xep.\n";
+            return;
+    }
+
+    // Hiển thị lại bảng danh sách sau khi sắp xếp
+    XuatDanhSach();
 }
 
 // --- OPTION 6: Thống kê tổng quỹ lương ---
 double QuanLyNhanSu::TinhTongLuong() const {
     double tong = 0;
     for (const NhanVien* nv : dsNhanVien_) {
-        tong += nv->TinhLuong(); // Lời gọi đa hình tính lương
+        tong += nv->TinhLuong(); // Đa hình tính lương từng loại nhân viên
     }
     return tong;
 }
@@ -201,12 +244,10 @@ void QuanLyNhanSu::ThongKeQuyLuong() const {
     std::cout << "====================================================\n";
 }
 
-// --- OPTION 7: Nạp dữ liệu mẫu (Khởi tạo sẵn 5 nhân viên thuộc đủ 3 loại) ---
+// --- OPTION 7: Nạp dữ liệu mẫu ngẫu nhiên (5 nhân viên đủ 3 loại) ---
 void QuanLyNhanSu::NapDuLieuMau() {
-    // Dọn dẹp dữ liệu cũ nếu có
-    GiaiPhongBoNho();
+    GiaiPhongBoNho(); // Dọn dẹp dữ liệu cũ nếu có
 
-    // Khởi tạo các đối tượng mẫu bằng Constructor có tham số
     ThemNhanVien(new NhanVienVanPhong("NV01", "Nguyen Van An", "15/03/1992", "Ha Noi", 22, 350000));
     ThemNhanVien(new NhanVienSanXuat("NV02", "Tran Thi Binh", "20/08/1995", "Nam Dinh", 180, 45000));
     ThemNhanVien(new QuanLy("NV03", "Le Hoang Cuong", "10/01/1988", "Da Nang", 18000000, 5000000));
@@ -214,4 +255,43 @@ void QuanLyNhanSu::NapDuLieuMau() {
     ThemNhanVien(new NhanVienSanXuat("NV05", "Vo Thi Giang", "12/07/1996", "Can Tho", 210, 48000));
 
     std::cout << "\n-> Nap thanh cong 5 nhan vien mau (du 3 loai nhan vien) vao he thong!\n";
+}
+
+// --- OPTION 8: Cập nhật thông tin nhân viên ---
+bool QuanLyNhanSu::CapNhatThongTin(const std::string& maNV) {
+    NhanVien* nv = TimKiemTheoMa(maNV);
+    if (nv == nullptr) {
+        return false;
+    }
+
+    std::cout << "\n-> NHAN VIEN DUOC CHON DE CAP NHAT:\n";
+    std::cout << *nv << "\n";
+    std::cout << "--------------------------------------------------------\n";
+    std::cout << "Luu y: Ma NV '" << maNV << "' duoc giu nguyen lam dinh danh.\n";
+    std::cout << "Moi ban nhap lai thong tin moi cho nhan vien nay:\n";
+
+    std::string maCu = nv->getMaNV();
+    std::cin >> *nv;   // Nhập lại thuộc tính mới
+    nv->setMaNV(maCu); // Bảo toàn Mã NV định danh không bị thay đổi
+
+    return true;
+}
+
+void QuanLyNhanSu::CapNhatMenu() {
+    if (dsNhanVien_.empty()) {
+        std::cout << "\n-> Danh sach rong, khong the cap nhat!\n";
+        return;
+    }
+
+    std::string maNV;
+    std::cout << "\n================ CAP NHAT THONG TIN NHAN VIEN ================\n";
+    std::cout << "Nhap Ma NV can cap nhat: ";
+    std::cin >> maNV;
+
+    if (CapNhatThongTin(maNV)) {
+        std::cout << "-> Cap nhat thong tin nhan vien co ma '" << maNV << "' THANH CONG!\n";
+        XuatDanhSach();
+    } else {
+        std::cout << "-> Loi: Khong tim thay nhan vien co ma '" << maNV << "' trong he thong!\n";
+    }
 }
