@@ -1,36 +1,34 @@
-#ifndef NHANVIENSANXUAT_H
-#define NHANVIENSANXUAT_H
+#ifndef NHAN_VIEN_SAN_XUAT_H
+#define NHAN_VIEN_SAN_XUAT_H
 
 #include "NhanVien.h"
 
 class NhanVienSanXuat : public NhanVien {
 private:
-    int soSanPham_;         // Số lượng sản phẩm hoàn thành
-    double donGiaSanPham_;  // Đơn giá cho mỗi sản phẩm
+    int soSanPham_;
+    double donGiaSanPham_;
+
+    // Định mức hằng số tĩnh dùng chung cho toàn bộ nhân viên sản xuất
+    static const int DINH_MUC = 100;
 
 public:
-    // 1. Constructors & Destructor
     NhanVienSanXuat();
-    NhanVienSanXuat(const std::string& maNV, 
-                    const std::string& hoTen, 
-                    const std::string& ngaySinh, 
-                    const std::string& diaChi, 
-                    int soSanPham, 
-                    double donGiaSanPham);
-    virtual ~NhanVienSanXuat();
+    NhanVienSanXuat(std::string maNV, std::string hoTen, std::string ngaySinh, std::string diaChi,
+                    int soSanPham, double donGiaSanPham);
 
-    // 2. Getters & Setters
-    int getSoSanPham() const;
-    void setSoSanPham(int soSanPham);
+    // Phương thức phụ trợ tính KPI theo mức sản phẩm
+    double TinhHeSoKPI() const;
 
-    double getDonGiaSanPham() const;
-    void setDonGiaSanPham(double donGiaSanPham);
+    // Ghi đè tính lương đa hình
+    double TinhLuong() const override;
 
-    // 3. Ghi đè các phương thức đa hình (Polymorphism)
-    double TinhLuong() override;
+    // Ghi đè Nhập / Xuất dữ liệu
     void Nhap(std::istream& in) override;
     void Xuat(std::ostream& out) const override;
-    void HienThiThongTin() const override;
-};
 
-#endif // NHANVIENSANXUAT_H
+    // Getters / Setters
+    int getSoSanPham() const;
+    void setSoSanPham(int soSP);
+    double getDonGiaSanPham() const;
+    void setDonGiaSanPham(double donGia);
+};
