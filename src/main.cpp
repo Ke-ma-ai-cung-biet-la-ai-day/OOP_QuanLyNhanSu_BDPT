@@ -15,10 +15,9 @@ void InMenuChinh() {
     std::cout << "5. Sap xep danh sach (Menu da tieu chi)\n";
     std::cout << "6. Thong ke so luong va tong quy luong\n";
     std::cout << "7. Nap du lieu mau (5 nhan vien khoi tao san)\n";
-    std::cout << "8. Cap nhat thong tin nhan vien\n";
     std::cout << "0. Thoat chuong trinh\n";
     std::cout << "=========================================================\n";
-    std::cout << "Moi ban chon chuc nang (0-8): ";
+    std::cout << "Moi ban chon chuc nang (0-7): ";
 }
 
 int main() {
@@ -28,11 +27,11 @@ int main() {
     do {
         InMenuChinh();
 
-        // Bẫy lỗi khi người dùng nhập ký tự không phải số nguyên
+        // Bẫy lỗi nhập liệu
         if (!(std::cin >> luaChon)) {
-            std::cout << "-> Loi: Vui long chi nhap so nguyen tu 0 den 8!\n";
-            std::cin.clear(); // Xóa trạng thái lỗi của std::cin
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Dọn dẹp bộ đệm
+            std::cout << "-> Loi: Vui long chi nhap so nguyen tu 0 den 7!\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             continue;
         }
 
@@ -74,17 +73,13 @@ int main() {
                 ql.NapDuLieuMau();
                 break;
 
-            case 8:
-                ql.CapNhatMenu();
-                break;
-
             case 0:
-                ql.GiaiPhongBoNho(); // Giải phóng bộ nhớ con trỏ Heap trước khi thoát
+                ql.GiaiPhongBoNho();
                 std::cout << "\nCam on ban da su dung phan mem Quan Ly Nhan Su. Tam biet!\n";
                 break;
 
             default:
-                std::cout << "-> Lua chon khong hop le! Vui long chon so tu 0 den 8.\n";
+                std::cout << "-> Lua chon khong hop le! Vui long chon so tu 0 den 7.\n";
                 break;
         }
 
