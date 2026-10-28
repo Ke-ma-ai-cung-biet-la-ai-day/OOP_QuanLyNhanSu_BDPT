@@ -1,63 +1,41 @@
 #include "QuanLy.h"
+#include <iomanip>
 
-// 1. Constructors & Destructor
 QuanLy::QuanLy() 
-    : NhanVien(), luongCoBan_(0.0), luongTrachNhiem_(0.0) {}
+    : NhanVien(), luongCoBan_(0.0), heSoChucVu_(1.0), luongTrachNhiem_(0.0) {}
 
-QuanLy::QuanLy(const std::string& maNV, 
-               const std::string& hoTen, 
-               const std::string& ngaySinh, 
-               const std::string& diaChi, 
-               double luongCoBan, 
-               double luongTrachNhiem)
+QuanLy::QuanLy(std::string maNV, std::string hoTen, std::string ngaySinh, std::string diaChi,
+               double luongCoBan, double heSoChucVu, double luongTrachNhiem)
     : NhanVien(maNV, hoTen, ngaySinh, diaChi), 
-      luongCoBan_(luongCoBan), 
-      luongTrachNhiem_(luongTrachNhiem) {}
+      luongCoBan_(luongCoBan), heSoChucVu_(heSoChucVu), luongTrachNhiem_(luongTrachNhiem) {}
 
-QuanLy::~QuanLy() {}
-
-// 2. Getters & Setters
-double QuanLy::getLuongCoBan() const { 
-    return luongCoBan_; 
+// Lương = Lương cơ bản * Hệ số chức vụ + Lương trách nhiệm
+double QuanLy::TinhLuong() const {
+    return (luongCoBan_ * heSoChucVu_) + luongTrachNhiem_;
 }
 
-void QuanLy::setLuongCoBan(double luongCoBan) { 
-    luongCoBan_ = luongCoBan; 
-}
-
-double QuanLy::getLuongTrachNhiem() const { 
-    return luongTrachNhiem_; 
-}
-
-void QuanLy::setLuongTrachNhiem(double luongTrachNhiem) { 
-    luongTrachNhiem_ = luongTrachNhiem; 
-}
-
-// 3. Định nghĩa lại phương thức TinhLuong() đa hình
-double QuanLy::TinhLuong() {
-    return luongCoBan_ + luongTrachNhiem_;
-}
-
-// 4. Nhập dữ liệu (Tái sử dụng hàm Nhap của lớp cha NhanVien)
 void QuanLy::Nhap(std::istream& in) {
-    NhanVien::Nhap(in); // Nhập maNV, hoTen, ngaySinh, diaChi
-    std::cout << "Nhap luong co ban: ";
+    NhanVien::Nhap(in);
+    std::cout << "Nhap luong co ban (VND): ";
     in >> luongCoBan_;
-    std::cout << "Nhap luong trach nhiem: ";
+    std::cout << "Nhap he so chuc vu (VD: 1.2, 1.5): ";
+    in >> heSoChucVu_;
+    std::cout << "Nhap luong trach nhiem (VND): ";
     in >> luongTrachNhiem_;
 }
 
-// 5. Xuất dữ liệu ra stream (Căn chỉnh định dạng cột khớp với các lớp con khác)
 void QuanLy::Xuat(std::ostream& out) const {
-    NhanVien::Xuat(out); // In thông tin cơ bản
-    out << std::left << std::setw(12) << "Quan Ly"
-        << std::setw(15) << std::fixed << std::setprecision(0) << luongCoBan_
-        << std::setw(15) << std::fixed << std::setprecision(0) << luongTrachNhiem_
-        << std::setw(18) << TinhLuong();
+    NhanVien::Xuat(out);
+    out << std::left 
+        << std::setw(20) << "Quan Ly Cap Cao"
+        << std::setw(18) << ("HSCV: " + std::to_string(heSoChucVu_).substr(0,3))
+        << std::setw(18) << "Trach Nhiem"
+        << std::setw(18) << std::fixed << std::setprecision(0) << TinhLuong();
 }
 
-// 6. Hiển thị thông tin
-void QuanLy::HienThiThongTin() const {
-    this->Xuat(std::cout);
-    std::cout << std::endl;
-}
+double QuanLy::getLuongCoBan() const { return luongCoBan_; }
+void QuanLy::setLuongCoBan(double luongCB) { luongCoBan_ = luongCB; }
+double QuanLy::getHeSoChucVu() const { return heSoChucVu_; }
+void QuanLy::setHeSoChucVu(double heSo) { heSoChucVu_ = heSo; }
+double QuanLy::getLuongTrachNhiem() const { return luongTrachNhiem_; }
+void QuanLy::setLuongTrachNhiem(double luongTN) { luongTrachNhiem_ = luongTN; }
