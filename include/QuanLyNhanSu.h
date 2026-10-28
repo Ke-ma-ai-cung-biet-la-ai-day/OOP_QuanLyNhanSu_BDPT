@@ -1,47 +1,89 @@
-#ifndef QUAN_LY_NHAN_SU_H
-#define QUAN_LY_NHAN_SU_H
-
-#include <vector>
-#include <string>
 #include <iostream>
-#include <iomanip>
-#include <algorithm>
+#include <limits>
+#include <string>
+#include "QuanLyNhanSu.h"
 
-#include "NhanVien.h"
-#include "NhanVienVanPhong.h"
-#include "NhanVienSanXuat.h"
-#include "QuanLy.h"
+// Hàm hiển thị Menu điều khiển chính
+void InMenuChinh() {
+    std::cout << "\n=========================================================\n";
+    std::cout << "          HE THONG QUAN LY NHAN SU - HE C++             \n";
+    std::cout << "=========================================================\n";
+    std::cout << "1. Them nhan vien moi (Nhap tu ban phim)\n";
+    std::cout << "2. Hien thi danh sach nhan vien (Dang bang)\n";
+    std::cout << "3. Tim kiem nhan vien (Theo Ma hoac Tu khoa Ten)\n";
+    std::cout << "4. Xoa nhan vien theo Ma dinh danh\n";
+    std::cout << "5. Sap xep danh sach (Menu da tieu chi)\n";
+    std::cout << "6. Thong ke so luong va tong quy luong\n";
+    std::cout << "7. Nap du lieu mau (5 nhan vien khoi tao san)\n";
+    std::cout << "0. Thoat chuong trinh\n";
+    std::cout << "=========================================================\n";
+    std::cout << "Moi ban chon chuc nang (0-7): ";
+}
 
-class QuanLyNhanSu {
-private:
-    std::vector<NhanVien*> dsNhanVien_;
+int main() {
+    QuanLyNhanSu ql;
+    int luaChon = -1;
 
-public:
-    QuanLyNhanSu();
-    ~QuanLyNhanSu();
+    do {
+        InMenuChinh();
 
-    void GiaiPhongBoNho();
-    void ThemNhanVien(NhanVien* nv);
-    bool KiemTraTrungMa(const std::string& maNV) const;
+        // Bẫy lỗi nhập liệu
+        if (!(std::cin >> luaChon)) {
+            std::cout << "-> Loi: Vui long chi nhap so nguyen tu 0 den 7!\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            continue;
+        }
 
-    // Các phương thức thực thi chức năng
-    void NhapDanhSach();
-    void XuatDanhSach() const;
+        switch (luaChon) {
+            case 1:
+                ql.NhapDanhSach();
+                break;
 
-    NhanVien* TimKiemTheoMa(const std::string& maNV) const;
-    std::vector<NhanVien*> TimKiemTheoTen(const std::string& ten) const;
-    void TimKiemMenu() const;
+            case 2:
+                ql.XuatDanhSach();
+                break;
 
-    bool XoaNhanVienTheoMa(const std::string& maNV);
-    void SapXepMenu();
+            case 3:
+                ql.TimKiemMenu();
+                break;
 
-    double TinhTongLuong() const;
-    void ThongKeQuyLuong() const;
+            case 4: {
+                std::string maNV;
+                std::cout << "\n================ XOA NHAN VIEN ================\n";
+                std::cout << "Nhap Ma NV can xoa: ";
+                std::cin >> maNV;
+                if (ql.XoaNhanVienTheoMa(maNV)) {
+                    std::cout << "-> Xoa nhan vien co ma '" << maNV << "' THANH CONG!\n";
+                } else {
+                    std::cout << "-> Loi: Khong tim thay nhan vien co ma '" << maNV << "' trong he thong!\n";
+                }
+                break;
+            }
 
-    void NapDuLieuMau();
+            case 5:
+                ql.SapXepMenu();
+                break;
 
-    bool CapNhatThongTin(const std::string& maNV);
-    void CapNhatMenu();
-};
+            case 6:
+                ql.ThongKeQuyLuong();
+                break;
 
-#endif // QUAN_LY_NHAN_SU_H
+            case 7:
+                ql.NapDuLieuMau();
+                break;
+
+            case 0:
+                ql.GiaiPhongBoNho();
+                std::cout << "\nCam on ban da su dung phan mem Quan Ly Nhan Su. Tam biet!\n";
+                break;
+
+            default:
+                std::cout << "-> Lua chon khong hop le! Vui long chon so tu 0 den 7.\n";
+                break;
+        }
+
+    } while (luaChon != 0);
+
+    return 0;
+}
