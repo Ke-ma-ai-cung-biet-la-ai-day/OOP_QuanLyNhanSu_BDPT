@@ -1,63 +1,48 @@
 #include "NhanVienSanXuat.h"
+#include <iomanip>
 
-// 1. Constructors & Destructor
 NhanVienSanXuat::NhanVienSanXuat() 
     : NhanVien(), soSanPham_(0), donGiaSanPham_(0.0) {}
 
-NhanVienSanXuat::NhanVienSanXuat(const std::string& maNV, 
-                                 const std::string& hoTen, 
-                                 const std::string& ngaySinh, 
-                                 const std::string& diaChi, 
-                                 int soSanPham, 
-                                 double donGiaSanPham)
+NhanVienSanXuat::NhanVienSanXuat(std::string maNV, std::string hoTen, std::string ngaySinh, std::string diaChi,
+                                 int soSanPham, double donGiaSanPham)
     : NhanVien(maNV, hoTen, ngaySinh, diaChi), 
-      soSanPham_(soSanPham), 
-      donGiaSanPham_(donGiaSanPham) {}
+      soSanPham_(soSanPham), donGiaSanPham_(donGiaSanPham) {}
 
-NhanVienSanXuat::~NhanVienSanXuat() {}
-
-// 2. Getters & Setters
-int NhanVienSanXuat::getSoSanPham() const { 
-    return soSanPham_; 
+// Xác định heSoKPI_ theo 5 mốc sản phẩm
+double NhanVienSanXuat::TinhHeSoKPI() const {
+    if (soSanPham_ > 110) return 1.2;
+    if (soSanPham_ > 100) return 1.1;
+    if (soSanPham_ == 100) return 1.0;
+    if (soSanPham_ >= 80) return 0.95;
+    return 0.9;
 }
 
-void NhanVienSanXuat::setSoSanPham(int soSanPham) { 
-    soSanPham_ = soSanPham; 
+// Lương = Sản phẩm * Đơn giá + (Sản phẩm - 100) * Đơn giá * KPI
+double NhanVienSanXuat::TinhLuong() const {
+    double luongCoBan = soSanPham_ * donGiaSanPham_;
+    int chenhLech = soSanPham_ - DINH_MUC;
+    return luongCoBan + (chenhLech * donGiaSanPham_ * TinhHeSoKPI());
 }
 
-double NhanVienSanXuat::getDonGiaSanPham() const { 
-    return donGiaSanPham_; 
-}
-
-void NhanVienSanXuat::setDonGiaSanPham(double donGiaSanPham) { 
-    donGiaSanPham_ = donGiaSanPham; 
-}
-
-// 3. Định nghĩa lại phương thức TinhLuong() đa hình
-double NhanVienSanXuat::TinhLuong() {
-    return soSanPham_ * donGiaSanPham_;
-}
-
-// 4. Nhập dữ liệu (Gọi lại hàm Nhap của lớp cha)
 void NhanVienSanXuat::Nhap(std::istream& in) {
-    NhanVien::Nhap(in); // Nhập maNV, hoTen, ngaySinh, diaChi
-    std::cout << "Nhap so san pham: ";
+    NhanVien::Nhap(in);
+    std::cout << "Nhap so san pham lam duoc: ";
     in >> soSanPham_;
-    std::cout << "Nhap don gia san pham: ";
+    std::cout << "Nhap don gia san pham (VND): ";
     in >> donGiaSanPham_;
 }
 
-// 5. Xuất dữ liệu ra stream (Căn chỉnh bảng bằng <iomanip>)
 void NhanVienSanXuat::Xuat(std::ostream& out) const {
-    NhanVien::Xuat(out); // In thông tin cơ bản
-    out << std::left << std::setw(12) << "San Xuat"
-        << std::setw(15) << soSanPham_
-        << std::setw(15) << std::fixed << std::setprecision(0) << donGiaSanPham_
-        << std::setw(18) << TinhLuong();
+    NhanVien::Xuat(out);
+    out << std::left 
+        << std::setw(20) << "San Xuat"
+        << std::setw(18) << (std::to_string(soSanPham_) + " SP")
+        << std::setw(18) << ("KPI " + std::to_string(TinhHeSoKPI()).substr(0,4))
+        << std::setw(18) << std::fixed << std::setprecision(0) << TinhLuong();
 }
 
-// 6. Hiển thị thông tin
-void NhanVienSanXuat::HienThiThongTin() const {
-    this->Xuat(std::cout);
-    std::cout << std::endl;
-}
+int NhanVienSanXuat::getSoSanPham() const { return soSanPham_; }
+void NhanVienSanXuat::setSoSanPham(int soSP) { soSanPham_ = soSP; }
+double NhanVienSanXuat::getDonGiaSanPham() const { return donGiaSanPham_; }
+void NhanVienSanXuat::setDonGiaSanPham(double donGia) { donGiaSanPham_ = donGia; }
