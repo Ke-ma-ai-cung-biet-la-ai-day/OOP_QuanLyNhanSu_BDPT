@@ -24,6 +24,18 @@ void NhanVien::setNgaySinh(const std::string& ngaySinh) { ngaySinh_ = ngaySinh; 
 const std::string& NhanVien::getDiaChi() const { return diaChi_; }
 void NhanVien::setDiaChi(const std::string& diaChi) { diaChi_ = diaChi; }
 
+std::string dinhDangTien (double soTien) {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision (0) << soTien;
+    std::string s = oss.str();
+    int vitri = (int)s.length() - 3;
+    while (vitri > 0) {
+        s.insert(viTri, ".");
+        viTri -= 3;
+    }
+    return s;
+}
+
 void NhanVien::nhap(std::istream& in) {
     std::cout << "Nhap ma nhan vien: ";
     std::getline(in >> std::ws, maNhanVien_);
