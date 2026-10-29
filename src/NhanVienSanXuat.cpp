@@ -9,7 +9,13 @@ NhanVienSanXuat::NhanVienSanXuat(std::string maNV, std::string hoTen, std::strin
     : NhanVien(maNV, hoTen, ngaySinh, diaChi), 
       soSanPham_(soSanPham), donGiaSanPham_(donGiaSanPham) {}
 
-// Xác định heSoKPI_ theo 5 mốc sản phẩm
+NhanVienSanXuat::~NhanVienSanXuat(){}
+
+int NhanVienSanXuat::getSoSanPham() const { return soSanPham_; }
+void NhanVienSanXuat::setSoSanPham(int soSP) { soSanPham_ = soSP; }
+double NhanVienSanXuat::getDonGiaSanPham() const { return donGiaSanPham_; }
+void NhanVienSanXuat::setDonGiaSanPham(double donGia) { donGiaSanPham_ = donGia; }
+
 double NhanVienSanXuat::TinhHeSoKPI() const {
     if (soSanPham_ > 110) return 1.2;
     if (soSanPham_ > 100) return 1.1;
@@ -18,7 +24,6 @@ double NhanVienSanXuat::TinhHeSoKPI() const {
     return 0.9;
 }
 
-// Lương = Sản phẩm * Đơn giá + (Sản phẩm - 100) * Đơn giá * KPI
 double NhanVienSanXuat::TinhLuong() const {
     double luongCoBan = soSanPham_ * donGiaSanPham_;
     int chenhLech = soSanPham_ - DINH_MUC;
@@ -42,7 +47,7 @@ void NhanVienSanXuat::Xuat(std::ostream& out) const {
         << std::setw(18) << std::fixed << std::setprecision(0) << TinhLuong();
 }
 
-int NhanVienSanXuat::getSoSanPham() const { return soSanPham_; }
-void NhanVienSanXuat::setSoSanPham(int soSP) { soSanPham_ = soSP; }
-double NhanVienSanXuat::getDonGiaSanPham() const { return donGiaSanPham_; }
-void NhanVienSanXuat::setDonGiaSanPham(double donGia) { donGiaSanPham_ = donGia; }
+void NhanVienSanXuat::hienThiThongTin() const{
+    Xuat(std::cout);
+    std::cout << std::endl;
+}
