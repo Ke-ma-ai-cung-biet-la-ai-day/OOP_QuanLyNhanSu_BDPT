@@ -40,11 +40,11 @@ void NhanVien::nhap(std::istream& in) {
     std::cout << "Nhap ma nhan vien: ";
     std::getline(in >> std::ws, maNhanVien_);
     std::cout << "Nhap ho va ten: ";
-    std::getline(in, hoTen_);
+    std::getline(in >> std::ws, hoTen_);
     std::cout << "Nhap ngay sinh (dd/mm/yyyy): ";
-    std::getline(in, ngaySinh_);
+    std::getline(in >> std::ws, ngaySinh_);
     std::cout << "Nhap dia chi: ";
-    std::getline(in, diaChi_);
+    std::getline(in >> std::ws, diaChi_);
 }
 void NhanVien::xuat(std::ostream& out) const {
     out << std::left << std::setw(10) << maNhanVien_ << std::setw(22) << hoTen_ << std::setw(14) << ngaySinh_ << std::setw(20) << diaChi_;
