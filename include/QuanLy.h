@@ -6,28 +6,31 @@
 class QuanLy : public NhanVien {
 private:
     double luongCoBan_;
-    double heSoChucVu_;
     double luongTrachNhiem_;
+    double heSoChucVu_;
 
 public:
     QuanLy();
     QuanLy(std::string maNV, std::string hoTen, std::string ngaySinh, std::string diaChi,
-           double luongCoBan, double heSoChucVu, double luongTrachNhiem);
+           double luongCoBan, double luongTrachNhiem, double heSoChucVu);
 
-    // Ghi đè tính lương đa hình
-    double TinhLuong() const override;
 
-    // Ghi đè Nhập / Xuất dữ liệu
-    void Nhap(std::istream& in) override;
-    void Xuat(std::ostream& out) const override;
-
-    // Getters / Setters
+    virtual ~QuanLy();
+    
     double getLuongCoBan() const;
     void setLuongCoBan(double luongCB);
     double getHeSoChucVu() const;
     void setHeSoChucVu(double heSo);
     double getLuongTrachNhiem() const;
     void setLuongTrachNhiem(double luongTN);
+
+    double TinhLuong() const override;
+
+    void Nhap(std::istream& in) override;
+    void Xuat(std::ostream& out) const override;
+
+    void hienThiThongTin() const override;
+
 };
 
-#endif // QUAN_LY_H
+#endif 
