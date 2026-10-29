@@ -5,11 +5,18 @@ QuanLy::QuanLy()
     : NhanVien(), luongCoBan_(0.0), heSoChucVu_(1.0), luongTrachNhiem_(0.0) {}
 
 QuanLy::QuanLy(std::string maNV, std::string hoTen, std::string ngaySinh, std::string diaChi,
-               double luongCoBan, double heSoChucVu, double luongTrachNhiem)
+               double luongCoBan, double luongTrachNhiem, double heSoChucVu)
     : NhanVien(maNV, hoTen, ngaySinh, diaChi), 
-      luongCoBan_(luongCoBan), heSoChucVu_(heSoChucVu), luongTrachNhiem_(luongTrachNhiem) {}
+      luongCoBan_(luongCoBan), luongTrachNhiem_(luongTrachNhiem), heSoChucVu_(heSoChucVu) {}
 
-// Lương = Lương cơ bản * Hệ số chức vụ + Lương trách nhiệm
+QuanLy::~QuanLy(){}
+double QuanLy::getLuongCoBan() const { return luongCoBan_; }
+void QuanLy::setLuongCoBan(double luongCB) { luongCoBan_ = luongCB; }
+double QuanLy::getHeSoChucVu() const { return heSoChucVu_; }
+void QuanLy::setHeSoChucVu(double heSo) { heSoChucVu_ = heSo; }
+double QuanLy::getLuongTrachNhiem() const { return luongTrachNhiem_; }
+void QuanLy::setLuongTrachNhiem(double luongTN) { luongTrachNhiem_ = luongTN; }
+
 double QuanLy::TinhLuong() const {
     return (luongCoBan_ * heSoChucVu_) + luongTrachNhiem_;
 }
@@ -33,9 +40,7 @@ void QuanLy::Xuat(std::ostream& out) const {
         << std::setw(18) << std::fixed << std::setprecision(0) << TinhLuong();
 }
 
-double QuanLy::getLuongCoBan() const { return luongCoBan_; }
-void QuanLy::setLuongCoBan(double luongCB) { luongCoBan_ = luongCB; }
-double QuanLy::getHeSoChucVu() const { return heSoChucVu_; }
-void QuanLy::setHeSoChucVu(double heSo) { heSoChucVu_ = heSo; }
-double QuanLy::getLuongTrachNhiem() const { return luongTrachNhiem_; }
-void QuanLy::setLuongTrachNhiem(double luongTN) { luongTrachNhiem_ = luongTN; }
+void QuanLy::hienThiThongTin() const{
+    Xuat(std::cout);
+    std::cout << std::endl;
+}
