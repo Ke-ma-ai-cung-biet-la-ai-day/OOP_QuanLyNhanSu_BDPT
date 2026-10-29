@@ -14,7 +14,7 @@ public:
     NhanVienVanPhong(std::string maNV, std::string hoTen, std::string ngaySinh, std::string diaChi,
                      int soNgayLamViec, double donGiaNgay, int soGioTangCa);
     
-    virtual ~NhanVienVanPhong()
+    virtual ~NhanVienVanPhong();
 
     int getSoNgayLamViec() const;
     void setSoNgayLamViec(int soNgay);
