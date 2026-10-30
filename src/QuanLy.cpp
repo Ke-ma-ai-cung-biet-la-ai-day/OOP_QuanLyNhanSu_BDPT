@@ -2,7 +2,7 @@
 #include <iomanip>
 
 QuanLy::QuanLy() 
-    : NhanVien(), luongCoBan_(0.0), heSoChucVu_(1.0), luongTrachNhiem_(0.0) {}
+    : NhanVien(), luongCoBan_(0), heSoChucVu_(1.0), luongTrachNhiem_(0) {}
 
 QuanLy::QuanLy(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
                int& luongCoBan, int& luongTrachNhiem, double& heSoChucVu)
