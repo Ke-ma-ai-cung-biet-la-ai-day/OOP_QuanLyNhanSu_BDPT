@@ -6,21 +6,21 @@
 class NhanVienSanXuat : public NhanVien {
 private:
     int soSanPham_;
-    double donGiaSanPham_;
+    int donGiaSanPham_;
 
     static const int DINH_MUC = 100;
 
 public:
     NhanVienSanXuat();
     NhanVienSanXuat(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
-                    int& soSanPham, double& donGiaSanPham);
+                    int& soSanPham, int& donGiaSanPham);
 
     virtual ~NhanVienSanXuat();
 
     int getSoSanPham() const;
     void setSoSanPham(const int& soSP);
     int getDonGiaSanPham() const;
-    void setDonGiaSanPham(int double& donGia);
+    void setDonGiaSanPham(const int& donGia);
 
     double TinhHeSoKPI() const;
 
