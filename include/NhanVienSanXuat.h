@@ -7,9 +7,7 @@ class NhanVienSanXuat : public NhanVien {
 private:
     int soSanPham_;
     int donGiaSanPham_;
-
     static const int DINH_MUC = 100;
-
 public:
     NhanVienSanXuat();
     NhanVienSanXuat(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
