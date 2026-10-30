@@ -6,7 +6,7 @@ NhanVienSanXuat::NhanVienSanXuat()
 
 NhanVienSanXuat::NhanVienSanXuat(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
                                  int& soSanPham, int& donGiaSanPham)
-    : NhanVien(maNV, hoTen, ngaySinh, diaChi), 
+    : NhanVien(maNhanVien, hoTen, ngaySinh, diaChi), 
       soSanPham_(soSanPham), donGiaSanPham_(donGiaSanPham) {}
 
 NhanVienSanXuat::~NhanVienSanXuat(){}
