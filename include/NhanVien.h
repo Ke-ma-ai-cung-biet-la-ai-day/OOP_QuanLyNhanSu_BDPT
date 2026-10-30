@@ -26,7 +26,7 @@ public:
     const std::string& getDiaChi() const;
     void setDiaChi(const std::string& diaChi);
 
-    std::string dinhDangTien (double soTien);
+    std::string dinhDangTien (double soTien) const;
 
     virtual void nhap(std::istream& in);
     virtual void xuat(std::ostream& out) const;
