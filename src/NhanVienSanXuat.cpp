@@ -8,7 +8,7 @@ NhanVienSanXuat::NhanVienSanXuat(const std::string& maNhanVien, const std::strin
     : NhanVien(maNhanVien, hoTen, ngaySinh, diaChi), 
       soSanPham_(soSanPham), donGiaSanPham_(donGiaSanPham) {}
 
-virtual NhanVienSanXuat::~NhanVienSanXuat(){}
+NhanVienSanXuat::~NhanVienSanXuat(){}
 
 int NhanVienSanXuat::getSoSanPham() const { return soSanPham_; }
 void NhanVienSanXuat::setSoSanPham(const int& soSanPham) { soSanPham_ = soSanPham; }
@@ -23,13 +23,13 @@ double NhanVienSanXuat::tinhHeSoKPI() const {
     return 0.85;
 }
 
-double NhanVienSanXuat::tinhLuong() const override{
+double NhanVienSanXuat::tinhLuong() const {
     double luongCoBan = soSanPham_ * donGiaSanPham_;
     int chenhLech = soSanPham_ - DINH_MUC;
     return luongCoBan + (chenhLech * donGiaSanPham_ * tinhHeSoKPI());
 }
 
-void NhanVienSanXuat::nhap(std::istream& in) override{
+void NhanVienSanXuat::nhap(std::istream& in) {
     NhanVien::nhap(in);
     std::cout << "Nhap so san pham lam duoc: ";
     in >> soSanPham_;
@@ -37,7 +37,7 @@ void NhanVienSanXuat::nhap(std::istream& in) override{
     in >> donGiaSanPham_;
 }
 
-void NhanVienSanXuat::xuat(std::ostream& out) const override{
+void NhanVienSanXuat::xuat(std::ostream& out) const {
     NhanVien::xuat(out);
     out << std::left 
         << std::setw(20) << "San xuat"
@@ -46,7 +46,7 @@ void NhanVienSanXuat::xuat(std::ostream& out) const override{
         << std::setw(18) << dinhDangTien(tinhLuong());
 }
 
-void NhanVienSanXuat::hienThiThongTin() const override{
+void NhanVienSanXuat::hienThiThongTin() const {
     xuat(std::cout);
     std::cout << std::endl;
 }
