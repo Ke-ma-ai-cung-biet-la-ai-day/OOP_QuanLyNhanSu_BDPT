@@ -11,3 +11,19 @@
 .idea/
 build/
 bin/
+
+# Cấu hình riêng của Visual Studio (Không đẩy lên)
+*.user
+*.userosv
+*.suo
+*.sln.docstates
+*.db
+*.opendb
+
+# Thư mục build đầu ra của Visual Studio
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
