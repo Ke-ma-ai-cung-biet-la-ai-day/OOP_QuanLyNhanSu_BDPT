@@ -26,9 +26,11 @@ public:
 
     double tinhLuong() const override;
 
+    void hienThiThongTin() const override;
+
     void nhap(std::istream& in) override;
     void xuat(std::ostream& out) const override;
 
-    void hienThiThongTin() const override;
+    
  
 };
