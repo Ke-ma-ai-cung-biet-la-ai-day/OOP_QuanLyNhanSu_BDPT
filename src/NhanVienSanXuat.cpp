@@ -42,7 +42,7 @@ void NhanVienSanXuat::xuat(std::ostream& out) const {
     out << std::left 
         << std::setw(20) << "San xuat"
         << std::setw(18) << (std::to_string(soSanPham_) + " san pham")
-        << std::setw(18) << ("KPI " + std::to_string(tinhHeSoKPI()).substr(0,4))
+        << std::setw(18) << ("KPI " + std::to_string(tinhHeSoKPI()).substr(0,3))
         << std::setw(18) << dinhDangTien(tinhLuong());
 }
 
