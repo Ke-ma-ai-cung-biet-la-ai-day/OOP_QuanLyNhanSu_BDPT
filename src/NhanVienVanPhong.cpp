@@ -1,7 +1,7 @@
 #include "NhanVienVanPhong.h"
 
 NhanVienVanPhong::NhanVienVanPhong() 
-    : NhanVien(), soNgayLamViec_(0), donGiaNgay_(0.0), soGioTangCa_(0.0) {}
+    : NhanVien(), soNgayLamViec_(0), donGiaNgay_(0), soGioTangCa_(0) {}
 
 NhanVienVanPhong::NhanVienVanPhong(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
                                    int& soNgayLamViec, int& donGiaNgay, int& soGioTangCa)
