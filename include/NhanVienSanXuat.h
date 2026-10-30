@@ -2,6 +2,8 @@
 #define NHAN_VIEN_SAN_XUAT_H
 
 #include "NhanVien.h"
+#include <iomanip>
+#include <string>
 
 class NhanVienSanXuat : public NhanVien {
 private:
