@@ -28,10 +28,10 @@ std::string dinhDangTien (double soTien) {
     std::ostringstream oss;
     oss << std::fixed << std::setprecision (0) << soTien;
     std::string s = oss.str();
-    int vitri = (int)s.length() - 3;
+    int index = (int)s.length() - 3;
     while (vitri > 0) {
-        s.insert(viTri, ".");
-        viTri -= 3;
+        s.insert(index, ".");
+        index -= 3;
     }
     return s;
 }
