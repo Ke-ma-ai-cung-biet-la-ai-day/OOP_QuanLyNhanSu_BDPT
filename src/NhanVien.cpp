@@ -4,14 +4,14 @@
 NhanVien::NhanVien() {
     maNhanVien_ = "";
     hoTen_ = "";
-    ngaySinh = "";
-    diaChi = "";
+    ngaySinh_ = "";
+    diaChi_ = "";
 }
 NhanVien::NhanVien(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi) {
     maNhanVien_ = maNhanVien;
     hoTen_ = hoTen;
-    ngaySinh = ngaySinh;
-    diaChi = diaChi;    
+    ngaySinh_ = ngaySinh;
+    diaChi_ = diaChi;    
 }
 NhanVien::~NhanVien() {}
 
