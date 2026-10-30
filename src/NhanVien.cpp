@@ -24,7 +24,7 @@ void NhanVien::setNgaySinh(const std::string& ngaySinh) { ngaySinh_ = ngaySinh; 
 const std::string& NhanVien::getDiaChi() const { return diaChi_; }
 void NhanVien::setDiaChi(const std::string& diaChi) { diaChi_ = diaChi; }
 
-std::string dinhDangTien (double soTien) {
+std::string dinhDangTien (double soTien) const {
     std::ostringstream oss;
     oss << std::fixed << std::setprecision (0) << soTien;
     std::string s = oss.str();
