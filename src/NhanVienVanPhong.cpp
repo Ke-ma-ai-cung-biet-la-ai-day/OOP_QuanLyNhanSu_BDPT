@@ -31,11 +31,6 @@ double NhanVienVanPhong::tinhLuong() const {
     return luongChinh + (tienOT * tinhHeSoKPI());
 }
 
-void NhanVienVanPhong::hienThiThongTin() const {
-    xuat(std::cout);
-    std::cout << std:: endl;
-}
-
 void NhanVienVanPhong::nhap(std::istream& in) {
     NhanVien::nhap(in);
     std::cout << "Nhap so ngay lam viec: ";
@@ -56,3 +51,7 @@ void NhanVienVanPhong::xuat(std::ostream& out) const {
         << std::setw(18) << dinhDangTien(tinhLuong());
 }
 
+void NhanVienVanPhong::hienThiThongTin() const {
+    xuat(std::cout);
+    std::cout << std:: endl;
+}
