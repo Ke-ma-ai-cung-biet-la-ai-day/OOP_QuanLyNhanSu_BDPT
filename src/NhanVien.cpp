@@ -29,7 +29,7 @@ std::string dinhDangTien (double soTien) {
     oss << std::fixed << std::setprecision (0) << soTien;
     std::string s = oss.str();
     int index = (int)s.length() - 3;
-    while (vitri > 0) {
+    while (index > 0) {
         s.insert(index, ".");
         index -= 3;
     }
