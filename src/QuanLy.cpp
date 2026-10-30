@@ -5,7 +5,7 @@ QuanLy::QuanLy()
     : NhanVien(), luongCoBan_(0), luongTrachNhiem_(0), heSoChucVu_(1.0) {}
 
 QuanLy::QuanLy(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
-               int& luongCoBan, int& luongTrachNhiem, double& heSoChucVu)
+               const int& luongCoBan, const int& luongTrachNhiem, const double& heSoChucVu)
     : NhanVien(maNhanVien, hoTen, ngaySinh, diaChi), 
       luongCoBan_(luongCoBan), luongTrachNhiem_(luongTrachNhiem), heSoChucVu_(heSoChucVu) {}
 
@@ -14,8 +14,8 @@ int QuanLy::getLuongCoBan() const { return luongCoBan_; }
 void QuanLy::setLuongCoBan(const int& luongCoBan) { luongCoBan_ = luongCoBan; }
 int QuanLy::getLuongTrachNhiem() const { return luongTrachNhiem_; }
 void QuanLy::setLuongTrachNhiem(const int& luongTrachNhiem) { luongTrachNhiem_ = luongTrachNhiem; }
-int QuanLy::getHeSoChucVu() const { return heSoChucVu_; }
-void QuanLy::setHeSoChucVu(const int& heSoChucVu) { heSoChucVu_ = heSoChucVu; }
+double QuanLy::getHeSoChucVu() const { return heSoChucVu_; }
+void QuanLy::setHeSoChucVu(const double& heSoChucVu) { heSoChucVu_ = heSoChucVu; }
 
 double QuanLy::tinhLuong() const {
     return (luongCoBan_ * heSoChucVu_) + luongTrachNhiem_;

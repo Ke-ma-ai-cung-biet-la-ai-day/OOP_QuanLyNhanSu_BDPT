@@ -13,7 +13,7 @@ private:
 public:
     NhanVienSanXuat();
     NhanVienSanXuat(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
-                    int& soSanPham, int& donGiaSanPham);
+                    const int& soSanPham, const int& donGiaSanPham);
 
     virtual ~NhanVienSanXuat();
 
