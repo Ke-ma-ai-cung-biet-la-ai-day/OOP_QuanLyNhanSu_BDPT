@@ -12,15 +12,15 @@ private:
 
 public:
     NhanVienSanXuat();
-    NhanVienSanXuat(std::string maNV, std::string hoTen, std::string ngaySinh, std::string diaChi,
-                    int soSanPham, double donGiaSanPham);
+    NhanVienSanXuat(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
+                    int& soSanPham, double& donGiaSanPham);
 
     virtual ~NhanVienSanXuat();
 
     int getSoSanPham() const;
-    void setSoSanPham(int soSP);
-    double getDonGiaSanPham() const;
-    void setDonGiaSanPham(double donGia);
+    void setSoSanPham(const int& soSP);
+    int getDonGiaSanPham() const;
+    void setDonGiaSanPham(int double& donGia);
 
     double TinhHeSoKPI() const;
 
