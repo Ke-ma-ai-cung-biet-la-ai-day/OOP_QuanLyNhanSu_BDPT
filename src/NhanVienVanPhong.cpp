@@ -1,5 +1,4 @@
 #include "NhanVienVanPhong.h"
-#include <iomanip>
 
 NhanVienVanPhong::NhanVienVanPhong() 
     : NhanVien(), soNgayLamViec_(0), donGiaNgay_(0.0), soGioTangCa_(0.0) {}
@@ -46,8 +45,7 @@ void NhanVienVanPhong::xuat(std::ostream& out) const {
     out << std::left 
         << std::setw(20) << "Van Phong"
         << std::setw(18) << (std::to_string(soNgayLamViec_) + " ngay")
-        << std::setw(18) << (std::to_string(soGioTangCa_) + "h OT (KPI " + std::to_string(tinhHeSoKPI()).substr(0,3) + ")")
-        << std::setw(18) << std::fixed << std::setprecision(0) << tinhLuong();
+        << std::setw(18) << (std::to_string(soGioTangCa_) + "gio tang ca (KPI " + std::to_string(tinhHeSoKPI()).substr(0,3) + ")")
         << std::setw(18) << dinhDangTien(tinhLuong());
 }
 
