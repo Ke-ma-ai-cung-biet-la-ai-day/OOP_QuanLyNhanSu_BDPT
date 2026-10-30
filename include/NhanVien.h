@@ -28,8 +28,8 @@ public:
 
     std::string dinhDangTien (double soTien);
 
-    virtual void Nhap(std::istream& in);
-    virtual void Xuat(std::ostream& out) const;
+    virtual void nhap(std::istream& in);
+    virtual void xuat(std::ostream& out) const;
     virtual double tinhLuong() = 0;
     virtual void hienThiThongTin() const;
 
