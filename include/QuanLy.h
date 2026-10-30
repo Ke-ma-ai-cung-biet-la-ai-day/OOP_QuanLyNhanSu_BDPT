@@ -5,31 +5,32 @@
 
 class QuanLy : public NhanVien {
 private:
-    double luongCoBan_;
-    double luongTrachNhiem_;
+    int luongCoBan_;
+    int luongTrachNhiem_;
     double heSoChucVu_;
 
 public:
     QuanLy();
-    QuanLy(std::string maNV, std::string hoTen, std::string ngaySinh, std::string diaChi,
-           double luongCoBan, double luongTrachNhiem, double heSoChucVu);
+    QuanLy(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
+           int& luongCoBan, int& luongTrachNhiem, double& heSoChucVu);
 
 
     virtual ~QuanLy();
     
-    double getLuongCoBan() const;
-    void setLuongCoBan(double luongCB);
-    double getHeSoChucVu() const;
-    void setHeSoChucVu(double heSo);
+    int getLuongCoBan() const;
+    void setLuongCoBan(const int& luongCB);
+    int getHeSoChucVu() const;
+    void setHeSoChucVu(const int& heSo);
     double getLuongTrachNhiem() const;
-    void setLuongTrachNhiem(double luongTN);
+    void setLuongTrachNhiem(const double& luongTN);
 
-    double TinhLuong() const override;
-
-    void Nhap(std::istream& in) override;
-    void Xuat(std::ostream& out) const override;
+    double tinhLuong() const override;
 
     void hienThiThongTin() const override;
+    
+    void nhap(std::istream& in) override;
+    void xuat(std::ostream& out) const override;
+
 
 };
 
