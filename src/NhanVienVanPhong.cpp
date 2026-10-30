@@ -11,11 +11,11 @@ NhanVienVanPhong::NhanVienVanPhong(const std::string& maNhanVien, const std::str
 NhanVienVanPhong::~NhanVienVanPhong(){}
 
 int NhanVienVanPhong::getSoNgayLamViec() const { return soNgayLamViec_; }
-void NhanVienVanPhong::setSoNgayLamViec(const int& soNgay) { soNgayLamViec_ = soNgay; }
+void NhanVienVanPhong::setSoNgayLamViec(const int& soNgayLamViec) { soNgayLamViec_ = soNgayLamViec; }
 int NhanVienVanPhong::getDonGiaNgay() const { return donGiaNgay_; }
-void NhanVienVanPhong::setDonGiaNgay(const int& donGia) { donGiaNgay_ = donGia; }
+void NhanVienVanPhong::setDonGiaNgay(const int& donGiaNgay) { donGiaNgay_ = donGiaNgay; }
 int NhanVienVanPhong::getSoGioTangCa() const { return soGioTangCa_; }
-void NhanVienVanPhong::setSoGioTangCa(const int& soGio) { soGioTangCa_ = soGio; }
+void NhanVienVanPhong::setSoGioTangCa(const int& soGioTangCa) { soGioTangCa_ = soGioTangCa; }
 
 double NhanVienVanPhong::tinhHeSoKPI() const {
     if (soNgayLamViec_ >= 22) return 1.2;
