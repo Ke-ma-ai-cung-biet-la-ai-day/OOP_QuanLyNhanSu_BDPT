@@ -1,5 +1,4 @@
 #include "NhanVienSanXuat.h"
-#include <iomanip>
 
 NhanVienSanXuat::NhanVienSanXuat() 
     : NhanVien(), soSanPham_(0), donGiaSanPham_(0.0) {}
@@ -9,28 +8,28 @@ NhanVienSanXuat::NhanVienSanXuat(const std::string& maNhanVien, const std::strin
     : NhanVien(maNhanVien, hoTen, ngaySinh, diaChi), 
       soSanPham_(soSanPham), donGiaSanPham_(donGiaSanPham) {}
 
-NhanVienSanXuat::~NhanVienSanXuat(){}
+virtual NhanVienSanXuat::~NhanVienSanXuat(){}
 
 int NhanVienSanXuat::getSoSanPham() const { return soSanPham_; }
-void NhanVienSanXuat::setSoSanPham(const int& soSP) { soSanPham_ = soSP; }
+void NhanVienSanXuat::setSoSanPham(const int& soSanPham) { soSanPham_ = soSanPham; }
 int NhanVienSanXuat::getDonGiaSanPham() const { return donGiaSanPham_; }
-void NhanVienSanXuat::setDonGiaSanPham(const int& donGia) { donGiaSanPham_ = donGia; }
+void NhanVienSanXuat::setDonGiaSanPham(const int& donGiaSanPham) { donGiaSanPham_ = donGiaSanPham; }
 
 double NhanVienSanXuat::tinhHeSoKPI() const {
     if (soSanPham_ > 110) return 1.2;
     if (soSanPham_ > 100) return 1.1;
     if (soSanPham_ == 100) return 1.0;
-    if (soSanPham_ >= 80) return 0.95;
-    return 0.9;
+    if (soSanPham_ >= 80) return 0.8;
+    return 0.85;
 }
 
-double NhanVienSanXuat::tinhLuong() const {
+double NhanVienSanXuat::tinhLuong() const override{
     double luongCoBan = soSanPham_ * donGiaSanPham_;
     int chenhLech = soSanPham_ - DINH_MUC;
     return luongCoBan + (chenhLech * donGiaSanPham_ * tinhHeSoKPI());
 }
 
-void NhanVienSanXuat::nhap(std::istream& in) {
+void NhanVienSanXuat::nhap(std::istream& in) override{
     NhanVien::nhap(in);
     std::cout << "Nhap so san pham lam duoc: ";
     in >> soSanPham_;
@@ -38,17 +37,16 @@ void NhanVienSanXuat::nhap(std::istream& in) {
     in >> donGiaSanPham_;
 }
 
-void NhanVienSanXuat::xuat(std::ostream& out) const {
+void NhanVienSanXuat::xuat(std::ostream& out) const override{
     NhanVien::xuat(out);
     out << std::left 
-        << std::setw(20) << "San Xuat"
-        << std::setw(18) << (std::to_string(soSanPham_) + " SP")
+        << std::setw(20) << "San xuat"
+        << std::setw(18) << (std::to_string(soSanPham_) + " san pham")
         << std::setw(18) << ("KPI " + std::to_string(tinhHeSoKPI()).substr(0,4))
-        << std::setw(18) << std::fixed << std::setprecision(0) << tinhLuong();
         << std::setw(18) << dinhDangTien(tinhLuong());
 }
 
-void NhanVienSanXuat::hienThiThongTin() const{
+void NhanVienSanXuat::hienThiThongTin() const override{
     xuat(std::cout);
     std::cout << std::endl;
 }
