@@ -53,5 +53,6 @@ void NhanVienVanPhong::xuat(std::ostream& out) const {
         << std::setw(18) << (std::to_string(soNgayLamViec_) + " ngay")
         << std::setw(18) << (std::to_string(soGioTangCa_) + "h OT (KPI " + std::to_string(tinhHeSoKPI()).substr(0,3) + ")")
         << std::setw(18) << std::fixed << std::setprecision(0) << tinhLuong();
+        << std::setw(18) << dinhDangTien(tinhLuong());
 }
 
