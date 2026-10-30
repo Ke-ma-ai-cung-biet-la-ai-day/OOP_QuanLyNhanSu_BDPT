@@ -4,36 +4,40 @@
 NhanVienVanPhong::NhanVienVanPhong() 
     : NhanVien(), soNgayLamViec_(0), donGiaNgay_(0.0), soGioTangCa_(0.0) {}
 
-NhanVienVanPhong::NhanVienVanPhong(std::string maNV, std::string hoTen, std::string ngaySinh, std::string diaChi,
-                                   int soNgayLamViec, double donGiaNgay, int soGioTangCa)
-    : NhanVien(maNV, hoTen, ngaySinh, diaChi), 
+NhanVienVanPhong::NhanVienVanPhong(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
+                                   int& soNgayLamViec, int& donGiaNgay, int& soGioTangCa)
+    : NhanVien(maNhanVien, hoTen, ngaySinh, diaChi), 
       soNgayLamViec_(soNgayLamViec), donGiaNgay_(donGiaNgay), soGioTangCa_(soGioTangCa) {}
 
 NhanVienVanPhong::~NhanVienVanPhong(){}
 
 int NhanVienVanPhong::getSoNgayLamViec() const { return soNgayLamViec_; }
-void NhanVienVanPhong::setSoNgayLamViec(int soNgay) { soNgayLamViec_ = soNgay; }
+void NhanVienVanPhong::setSoNgayLamViec(const int& soNgay) { soNgayLamViec_ = soNgay; }
 double NhanVienVanPhong::getDonGiaNgay() const { return donGiaNgay_; }
-void NhanVienVanPhong::setDonGiaNgay(double donGia) { donGiaNgay_ = donGia; }
+void NhanVienVanPhong::setDonGiaNgay(const int& donGia) { donGiaNgay_ = donGia; }
 int NhanVienVanPhong::getSoGioTangCa() const { return soGioTangCa_; }
-void NhanVienVanPhong::setSoGioTangCa(int soGio) { soGioTangCa_ = soGio; }
+void NhanVienVanPhong::setSoGioTangCa(const int& soGio) { soGioTangCa_ = soGio; }
 
-double NhanVienVanPhong::TinhHeSoKPI() const {
+double NhanVienVanPhong::tinhHeSoKPI() const {
     if (soNgayLamViec_ >= 22) return 1.2;
     if (soNgayLamViec_ >= 18) return 1.0;
     return 0.9;
 }
 
 
-double NhanVienVanPhong::TinhLuong() const {
+double NhanVienVanPhong::tinhLuong() const {
     double luongChinh = soNgayLamViec_ * donGiaNgay_;
-    double tienOT = soGioTangCa_ * 150000.0;
-    return luongChinh + (tienOT * TinhHeSoKPI());
+    double tienOT = soGioTangCa_ * TIEN_TANG_CA;
+    return luongChinh + (tienOT * tinhHeSoKPI());
 }
 
+void NhanVienVanPhong::hienThiThongTin() const {
+    xuat(std::cout);
+    std::cout << std:: endl;
+}
 
-void NhanVienVanPhong::Nhap(std::istream& in) {
-    NhanVien::Nhap(in);
+void NhanVienVanPhong::nhap(std::istream& in) {
+    NhanVien::nhap(in);
     std::cout << "Nhap so ngay lam viec: ";
     in >> soNgayLamViec_;
     std::cout << "Nhap don gia ngay (VND): ";
@@ -42,17 +46,12 @@ void NhanVienVanPhong::Nhap(std::istream& in) {
     in >> soGioTangCa_;
 }
 
-void NhanVienVanPhong::Xuat(std::ostream& out) const {
-    NhanVien::Xuat(out);
+void NhanVienVanPhong::xuat(std::ostream& out) const {
+    NhanVien::xuat(out);
     out << std::left 
         << std::setw(20) << "Van Phong"
         << std::setw(18) << (std::to_string(soNgayLamViec_) + " ngay")
-        << std::setw(18) << (std::to_string(soGioTangCa_) + "h OT (KPI " + std::to_string(TinhHeSoKPI()).substr(0,3) + ")")
-        << std::setw(18) << std::fixed << std::setprecision(0) << TinhLuong();
-}
-
-void NhanVienVanPhong::hienThiThongTin() const {
-    Xuat(std::cout);
-    std::cout << std:: endl;
+        << std::setw(18) << (std::to_string(soGioTangCa_) + "h OT (KPI " + std::to_string(tinhHeSoKPI()).substr(0,3) + ")")
+        << std::setw(18) << std::fixed << std::setprecision(0) << tinhLuong();
 }
 
