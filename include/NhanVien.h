@@ -30,7 +30,7 @@ public:
 
     virtual void nhap(std::istream& in);
     virtual void xuat(std::ostream& out) const;
-    virtual double tinhLuong() = 0;
+    virtual double tinhLuong() const = 0;
     virtual void hienThiThongTin() const;
 
     friend std::istream& operator>>(std::istream& in, NhanVien& nv);
