@@ -6,22 +6,23 @@
 class NhanVienVanPhong : public NhanVien {
 private:
     int soNgayLamViec_;
-    double donGiaNgay_;
+    int donGiaNgay_;
     int soGioTangCa_; 
+    static const int TIEN_TANG_CA = 150000;
 
 public:
     NhanVienVanPhong();
-    NhanVienVanPhong(std::string maNV, std::string hoTen, std::string ngaySinh, std::string diaChi,
-                     int soNgayLamViec, double donGiaNgay, int soGioTangCa);
+    NhanVienVanPhong(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
+                     int& soNgayLamViec, int& donGiaNgay, int& soGioTangCa);
     
     virtual ~NhanVienVanPhong();
 
     int getSoNgayLamViec() const;
-    void setSoNgayLamViec(int soNgay);
+    void setSoNgayLamViec(const int& soNgay);
     double getDonGiaNgay() const;
-    void setDonGiaNgay(double donGia);
+    void setDonGiaNgay(const int& donGia);
     int getSoGioTangCa() const;
-    void setSoGioTangCa(int soGio);
+    void setSoGioTangCa(const int& soGio);
 
     double tinhHeSoKPI() const;
 
@@ -31,4 +32,5 @@ public:
 
     void nhap(std::istream& in) override;
     void xuat(std::ostream& out) const override;
+
 };
