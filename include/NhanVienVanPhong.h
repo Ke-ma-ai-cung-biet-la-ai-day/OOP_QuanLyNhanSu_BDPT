@@ -19,7 +19,7 @@ public:
 
     int getSoNgayLamViec() const;
     void setSoNgayLamViec(const int& soNgay);
-    double getDonGiaNgay() const;
+    int getDonGiaNgay() const;
     void setDonGiaNgay(const int& donGia);
     int getSoGioTangCa() const;
     void setSoGioTangCa(const int& soGio);
