@@ -13,7 +13,7 @@ NhanVienVanPhong::~NhanVienVanPhong(){}
 
 int NhanVienVanPhong::getSoNgayLamViec() const { return soNgayLamViec_; }
 void NhanVienVanPhong::setSoNgayLamViec(const int& soNgay) { soNgayLamViec_ = soNgay; }
-double NhanVienVanPhong::getDonGiaNgay() const { return donGiaNgay_; }
+int NhanVienVanPhong::getDonGiaNgay() const { return donGiaNgay_; }
 void NhanVienVanPhong::setDonGiaNgay(const int& donGia) { donGiaNgay_ = donGia; }
 int NhanVienVanPhong::getSoGioTangCa() const { return soGioTangCa_; }
 void NhanVienVanPhong::setSoGioTangCa(const int& soGio) { soGioTangCa_ = soGio; }
