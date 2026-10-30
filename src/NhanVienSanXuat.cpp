@@ -13,7 +13,7 @@ NhanVienSanXuat::~NhanVienSanXuat(){}
 
 int NhanVienSanXuat::getSoSanPham() const { return soSanPham_; }
 void NhanVienSanXuat::setSoSanPham(const int& soSP) { soSanPham_ = soSP; }
-double NhanVienSanXuat::getDonGiaSanPham() const { return donGiaSanPham_; }
+int NhanVienSanXuat::getDonGiaSanPham() const { return donGiaSanPham_; }
 void NhanVienSanXuat::setDonGiaSanPham(const int& donGia) { donGiaSanPham_ = donGia; }
 
 double NhanVienSanXuat::tinhHeSoKPI() const {
