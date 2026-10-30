@@ -22,14 +22,13 @@ public:
     int getDonGiaSanPham() const;
     void setDonGiaSanPham(const int& donGia);
 
-    double TinhHeSoKPI() const;
+    double tinhHeSoKPI() const;
 
-    double TinhLuong() const override;
+    double tinhLuong() const override;
+
+    void nhap(std::istream& in) override;
+    void xuat(std::ostream& out) const override;
 
     void hienThiThongTin() const override;
-
-    void Nhap(std::istream& in) override;
-    void Xuat(std::ostream& out) const override;
-
-    
+ 
 };
