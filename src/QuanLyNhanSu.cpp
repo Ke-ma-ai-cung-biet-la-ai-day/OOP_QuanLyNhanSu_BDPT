@@ -1,154 +1,66 @@
 #include "QuanLyNhanSu.h"
 
+#include "NhanVienSanXuat.h"
+#include "NhanVienVanPhong.h"
+#include "QuanLy.h"
+
+#include <iomanip>
+#include <iostream>
+
+const std::string QuanLyNhanSu::TIEN_TO_MA = "NV";
+
 QuanLyNhanSu::QuanLyNhanSu() {}
 
 QuanLyNhanSu::~QuanLyNhanSu() {
-    GiaiPhongBoNho();
+    giaiPhongBoNho();
 }
 
-void QuanLyNhanSu::GiaiPhongBoNho() {
-    for (NhanVien* nv : dsNhanVien_) {
-        delete nv;
+void QuanLyNhanSu::themNhanVien(NhanVien* nhanVien) {
+    if (nhanVien == nullptr) {
+        std::cout << "Khong the them nhan vien rong (nullptr).\n";
+        return;
     }
-    dsNhanVien_.clear();
-}
-
-void QuanLyNhanSu::ThemNhanVien(NhanVien* nv) {
-    if (nv != nullptr) {
-        dsNhanVien_.push_back(nv);
+    if (!kiemTraDinhDangMa(nhanVien->getMaNhanVien())) {
+        std::cout << "Ma nhan vien \"" << nhanVien->getMaNhanVien() << "\" sai dinh dang (VD: "
+                  << TIEN_TO_MA << "0001), khong the them.\n";
+        delete nhanVien;
+        return;
     }
-}
-
-bool QuanLyNhanSu::KiemTraTrungMa(const std::string& maNV) const {
-    for (const NhanVien* nv : dsNhanVien_) {
-        if (nv->getMaNV() == maNV) return true;
+    if (kiemTraTrungMa(nhanVien->getMaNhanVien())) {
+        std::cout << "Ma nhan vien \"" << nhanVien->getMaNhanVien() << "\" da ton tai, khong the them.\n";
+        delete nhanVien;
+        return;
     }
-    return false;
+    dsNhanVien_.push_back(nhanVien);
 }
 
-void QuanLyNhanSu::NhapDanhSach() {
+bool QuanLyNhanSu::kiemTraTrungMa(const std::string& maNhanVien) const {
+    return timKiemTheoMa(maNhanVien) != nullptr;
+}
+
+void QuanLyNhanSu::nhapDanhSach() {
     int loai = 0;
-    std::cout << "\n================ CHON LOAI NHAN VIEN ================\n";
-    std::cout << "1. Nhan vien Van phong\n";
-    std::cout << "2. Nhan vien San xuat\n";
-    std::cout << "3. Quan ly (Cap cao)\n";
-    std::cout << "Chon loai (1-3): ";
-    std::cin >> loai;
-
-    if (loai < 1 || loai > 3) {
-        std::cout << "-> Loai nhan vien khong hop le!\n";
-        return;
-    }
-
-    NhanVien* nv = nullptr;
-    if (loai == 1) nv = new NhanVienVanPhong();
-    else if (loai == 2) nv = new NhanVienSanXuat();
-    else if (loai == 3) nv = new QuanLy();
-
-    std::string maTmp;
     while (true) {
-        std::cout << "Nhap Ma Nhan Vien: ";
-        std::cin >> maTmp;
-        if (KiemTraTrungMa(maTmp)) {
-            std::cout << "-> Loi: Ma NV '" << maTmp << "' da ton tai! Vui long nhap lai.\n";
-        } else {
-            nv->setMaNV(maTmp);
-            break;
+        std::cout << "\n================ CHON LOAI NHAN VIEN ================\n"
+                  << LOAI_VAN_PHONG << ". Nhan vien Van phong\n"
+                  << LOAI_SAN_XUAT << ". Nhan vien San xuat\n"
+                  << LOAI_QUAN_LY << ". Quan ly (Cap cao)\n"
+                  << LOAI_KET_THUC << ". Ket thuc nhap\n";
+        if (!docSoNguyen("Chon loai (0-3): ", LOAI_KET_THUC, LOAI_QUAN_LY, loai)) {
+            return;
         }
-    }
-
-    std::cin >> *nv; 
-    ThemNhanVien(nv);
-    std::cout << "-> Them nhan vien moi thanh cong!\n";
-}
-
-void QuanLyNhanSu::XuatDanhSach() const {
-    if (dsNhanVien_.empty()) {
-        std::cout << "\n-> Danh sach nhan vien hien dang rong!\n";
-        return;
-    }
-
-    std::cout << "\n================================================ DANH SACH NHAN VIEN ================================================\n";
-    std::cout << std::left 
-              << std::setw(10) << "Ma NV"
-              << std::setw(22) << "Ho va Ten"
-              << std::setw(14) << "Ngay Sinh"
-              << std::setw(16) << "Dia Chi"
-              << std::setw(20) << "Chuc Vu / Loai"
-              << std::setw(18) << "So Luong / Cong"
-              << std::setw(18) << "Ghi Chu / KPI"
-              << std::setw(18) << "Thuc Nhan (VND)" << "\n";
-    std::cout << std::string(136, '-') << "\n";
-
-    for (const NhanVien* nv : dsNhanVien_) {
-        std::cout << *nv << "\n";
-    }
-
-    std::cout << std::string(136, '=') << "\n";
-    std::cout << "-> Tong so nhan vien: " << dsNhanVien_.size() << " nguoi.\n";
-    std::cout << "-> Tong quy luong phai tra: " << std::fixed << std::setprecision(0) << TinhTongLuong() << " VND\n";
-}
-
-NhanVien* QuanLyNhanSu::TimKiemTheoMa(const std::string& maNV) const {
-    for (NhanVien* nv : dsNhanVien_) {
-        if (nv->getMaNV() == maNV) return nv;
-    }
-    return nullptr;
-}
-
-std::vector<NhanVien*> QuanLyNhanSu::TimKiemTheoTen(const std::string& ten) const {
-    std::vector<NhanVien*> ketQua;
-    for (NhanVien* nv : dsNhanVien_) {
-        if (nv->getHoTen().find(ten) != std::string::npos) {
-            ketQua.push_back(nv);
+        if (loai == LOAI_KET_THUC) {
+            return;
         }
-    }
-    return ketQua;
-}
-
-void QuanLyNhanSu::TimKiemMenu() const {
-    if (dsNhanVien_.empty()) {
-        std::cout << "\n-> Danh sach rong, khong the tim kiem!\n";
-        return;
-    }
-
-    int chon = 0;
-    std::cout << "\n1. Tim kiem chinh xac theo Ma NV\n";
-    std::cout << "2. Tim kiem theo Tu khoa Ten\n";
-    std::cout << "Chon (1-2): ";
-    std::cin >> chon;
-
-    if (chon == 1) {
-        std::string maNV;
-        std::cout << "Nhap Ma NV can tim: ";
-        std::cin >> maNV;
-        NhanVien* nv = TimKiemTheoMa(maNV);
-        if (nv != nullptr) {
-            std::cout << "\n-> KET QUA TIM KIEM:\n";
-            std::cout << *nv << "\n";
-        } else {
-            std::cout << "-> Khong tim thay nhan vien co ma: " << maNV << "\n";
-        }
-    } else if (chon == 2) {
-        std::string ten;
-        std::cout << "Nhap tu khoa Ten can tim: ";
-        std::cin.ignore();
-        std::getline(std::cin, ten);
-        std::vector<NhanVien*> kq = TimKiemTheoTen(ten);
-        if (!kq.empty()) {
-            std::cout << "\n-> TIM THAY " << kq.size() << " NHAN VIEN PHU HOP:\n";
-            for (const NhanVien* nv : kq) {
-                std::cout << *nv << "\n";
-            }
-        } else {
-            std::cout << "-> Khong tim thay nhan vien nào chua tu khoa: '" << ten << "'\n";
+        if (!nhapNhanVienMoi(loai)) {
+            return;
         }
     }
 }
 
-bool QuanLyNhanSu::XoaNhanVienTheoMa(const std::string& maNV) {
-    for (auto it = dsNhanVien_.begin(); it != dsNhanVien_.end(); ++it) {
-        if ((*it)->getMaNV() == maNV) {
+bool QuanLyNhanSu::xoaNhanVien(const std::string& maNhanVien) {
+    for (std::vector<NhanVien*>::iterator it = dsNhanVien_.begin(); it != dsNhanVien_.end(); ++it) {
+        if ((*it)->getMaNhanVien() == maNhanVien) {
             delete *it;
             dsNhanVien_.erase(it);
             return true;
@@ -157,113 +69,289 @@ bool QuanLyNhanSu::XoaNhanVienTheoMa(const std::string& maNV) {
     return false;
 }
 
-void QuanLyNhanSu::SapXepMenu() {
+NhanVien* QuanLyNhanSu::timKiemTheoMa(const std::string& maNhanVien) const {
+    for (NhanVien* nhanVien : dsNhanVien_) {
+        if (nhanVien->getMaNhanVien() == maNhanVien) {
+            return nhanVien;
+        }
+    }
+    return nullptr;
+}
+
+std::vector<NhanVien*> QuanLyNhanSu::timKiemTheoTen(const std::string& hoTen) const {
+    std::vector<NhanVien*> ketQua;
+    const std::string tuKhoa = chuyenThuong(hoTen);
+    for (NhanVien* nhanVien : dsNhanVien_) {
+        if (chuyenThuong(nhanVien->getHoTen()).find(tuKhoa) != std::string::npos) {
+            ketQua.push_back(nhanVien);
+        }
+    }
+    return ketQua;
+}
+
+void QuanLyNhanSu::timKiemMenu() {
     if (dsNhanVien_.empty()) {
-        std::cout << "\n-> Danh sach rong, khong the sap xep!\n";
+        std::cout << "\n-> Danh sach rong, khong the tim kiem!\n";
         return;
     }
 
-    int chon = 0;
-    std::cout << "\n================ CHON TIEU CHI SAP XEP ================\n";
-    std::cout << "1. Luong Thuc Nhan GIAM DAN (Mac dinh)\n";
-    std::cout << "2. Luong Thuc Nhan TANG DAN\n";
-    std::cout << "3. Ma Nhan Vien (A -> Z)\n";
-    std::cout << "4. Ho va Ten (A -> Z)\n";
-    std::cout << "Chon tieu chi (1-4): ";
-    std::cin >> chon;
-
-    switch (chon) {
-        case 1:
-            std::sort(dsNhanVien_.begin(), dsNhanVien_.end(), [](const NhanVien* a, const NhanVien* b) {
-                return a->TinhLuong() > b->TinhLuong();
-            });
-            std::cout << "-> Da sap xep danh sach theo Luong Thuc Nhan GIAM DAN!\n";
-            break;
-        case 2:
-            std::sort(dsNhanVien_.begin(), dsNhanVien_.end(), [](const NhanVien* a, const NhanVien* b) {
-                return a->TinhLuong() < b->TinhLuong();
-            });
-            std::cout << "-> Da sap xep danh sach theo Luong Thuc Nhan TANG DAN!\n";
-            break;
-        case 3:
-            std::sort(dsNhanVien_.begin(), dsNhanVien_.end(), [](const NhanVien* a, const NhanVien* b) {
-                return a->getMaNV() < b->getMaNV();
-            });
-            std::cout << "-> Da sap xep danh sach theo Ma NV (A -> Z)!\n";
-            break;
-        case 4:
-            std::sort(dsNhanVien_.begin(), dsNhanVien_.end(), [](const NhanVien* a, const NhanVien* b) {
-                return a->getHoTen() < b->getHoTen();
-            });
-            std::cout << "-> Da sap xep danh sach theo Ho va Ten (A -> Z)!\n";
-            break;
-        default:
-            std::cout << "-> Lua chon khong hop le!\n";
+    int luaChon = -1;
+    do {
+        std::cout << "\n================ TIM KIEM NHAN VIEN ================\n"
+                  << "1. Tim chinh xac theo Ma NV\n"
+                  << "2. Tim theo tu khoa Ho ten\n"
+                  << "0. Quay lai\n";
+        if (!docSoNguyen("Chon (0-2): ", 0, 2, luaChon)) {
             return;
+        }
+
+        if (luaChon == 1) {
+            std::string maNhanVien;
+            if (!docChuoi("Nhap Ma NV can tim: ", maNhanVien)) {
+                return;
+            }
+            NhanVien* nhanVien = timKiemTheoMa(maNhanVien);
+            if (nhanVien == nullptr) {
+                std::cout << "-> Khong tim thay nhan vien co ma: " << maNhanVien << "\n";
+            } else {
+                std::cout << "\n-> KET QUA TIM KIEM:\n";
+                inDanhSachNhanVien(std::vector<NhanVien*>(1, nhanVien));
+            }
+        } else if (luaChon == 2) {
+            std::string hoTen;
+            if (!docChuoi("Nhap tu khoa Ho ten can tim: ", hoTen)) {
+                return;
+            }
+            std::vector<NhanVien*> ketQua = timKiemTheoTen(hoTen);
+            if (ketQua.empty()) {
+                std::cout << "-> Khong tim thay nhan vien nao co ten chua tu khoa: '" << hoTen << "'\n";
+            } else {
+                std::cout << "\n-> TIM THAY " << ketQua.size() << " NHAN VIEN PHU HOP:\n";
+                inDanhSachNhanVien(ketQua);
+            }
+        }
+    } while (luaChon != 0);
+}
+
+void QuanLyNhanSu::hienThiDanhSach() const {
+    if (dsNhanVien_.empty()) {
+        std::cout << "\n-> Danh sach nhan vien hien dang rong!\n";
+        return;
     }
 
-    XuatDanhSach();
+    std::cout << "\n" << std::string(DO_RONG_BANG / 2 - 10, '=') << " DANH SACH NHAN VIEN "
+              << std::string(DO_RONG_BANG / 2 - 10, '=') << "\n";
+    inDanhSachNhanVien(dsNhanVien_);
+    std::cout << std::string(DO_RONG_BANG, '=') << "\n";
+    std::cout << "-> Tong so nhan vien: " << dsNhanVien_.size() << " nguoi.\n";
+    std::cout << "-> Tong quy luong phai tra: " << dsNhanVien_.front()->dinhDangTien(thongKeQuyLuong()) << " VND\n";
 }
 
-double QuanLyNhanSu::TinhTongLuong() const {
-    double tong = 0;
-    for (const NhanVien* nv : dsNhanVien_) {
-        tong += nv->TinhLuong();
+double QuanLyNhanSu::thongKeQuyLuong() const {
+    double tongLuong = 0.0;
+    for (const NhanVien* nhanVien : dsNhanVien_) {
+        tongLuong += nhanVien->tinhLuong();
     }
-    return tong;
+    return tongLuong;
 }
 
-void QuanLyNhanSu::ThongKeQuyLuong() const {
-    std::cout << "\n================ THONG KE QUY LUONG ================\n";
-    std::cout << "Tong so luong nhan vien : " << dsNhanVien_.size() << " nguoi.\n";
-    std::cout << "Tong quy luong phai chi  : " << std::fixed << std::setprecision(0) << TinhTongLuong() << " VND\n";
-    std::cout << "====================================================\n";
+void QuanLyNhanSu::giaiPhongBoNho() {
+    for (NhanVien* nhanVien : dsNhanVien_) {
+        delete nhanVien;
+    }
+    dsNhanVien_.clear();
 }
 
-void QuanLyNhanSu::NapDuLieuMau() {
-    GiaiPhongBoNho(); // Dọn sạch dữ liệu cũ
+void QuanLyNhanSu::napDuLieuMau() {
+    giaiPhongBoNho(); 
+    int soSanPham = 0;
+    int donGiaSanPham = 0;
+    int soNgayLamViec = 0;
+    int donGiaNgay = 0;
+    int soGioTangCa = 0;
+    int luongCoBan = 0;
+    int luongTrachNhiem = 0;
+    double heSoChucVu = 0.0;
 
-    // Nạp dữ liệu mẫu phù hợp với Constructor mới
-    ThemNhanVien(new NhanVienVanPhong("NV01", "Nguyen Van An", "15/03/1992", "Ha Noi", 22, 350000, 10));
-    ThemNhanVien(new NhanVienSanXuat("NV02", "Tran Thi Binh", "20/08/1995", "Nam Dinh", 115, 45000));
-    ThemNhanVien(new QuanLy("NV03", "Le Hoang Cuong", "10/01/1988", "Da Nang", 15000000, 1.5, 3000000));
-    ThemNhanVien(new NhanVienVanPhong("NV04", "Pham Minh Dung", "05/11/1998", "Hai Phong", 17, 320000, 0));
-    ThemNhanVien(new NhanVienSanXuat("NV05", "Vo Thi Giang", "12/07/1996", "Can Tho", 75, 48000));
+    soNgayLamViec = 22;
+    donGiaNgay = 350000;
+    soGioTangCa = 10;
+    themNhanVien(new NhanVienVanPhong("NV0001", "Nguyen Van An", "15/03/1992", "Ha Noi", soNgayLamViec, donGiaNgay, soGioTangCa));
 
-    std::cout << "\n-> Nap thanh cong 5 nhan vien mau (du 3 loai) vao he thong!\n";
+    soSanPham = 115;
+    donGiaSanPham = 45000;
+    themNhanVien(new NhanVienSanXuat("NV0002", "Tran Thi Binh", "20/08/1995", "Nam Dinh", soSanPham, donGiaSanPham));
+
+    luongCoBan = 15000000;
+    luongTrachNhiem = 3000000;
+    heSoChucVu = 1.5;
+    themNhanVien(new QuanLy("NV0003", "Le Hoang Cuong", "10/01/1988", "Da Nang", luongCoBan, luongTrachNhiem, heSoChucVu));
+
+    soNgayLamViec = 17;
+    donGiaNgay = 320000;
+    soGioTangCa = 0;
+    themNhanVien(new NhanVienVanPhong("NV0004", "Pham Minh Dung", "05/11/1998", "Hai Phong", soNgayLamViec, donGiaNgay, soGioTangCa));
+
+    soSanPham = 75;
+    donGiaSanPham = 48000;
+    themNhanVien(new NhanVienSanXuat("NV0005", "Vo Thi Giang", "12/07/1996", "Can Tho", soSanPham, donGiaSanPham));
+
+    std::cout << "\n-> Nap thanh cong " << dsNhanVien_.size() << " nhan vien mau (du 3 loai) vao he thong!\n";
 }
 
-bool QuanLyNhanSu::CapNhatThongTin(const std::string& maNV) {
-    NhanVien* nv = TimKiemTheoMa(maNV);
-    if (nv == nullptr) return false;
+bool QuanLyNhanSu::nhapNhanVienMoi(int loai) {
+    while (true) {
+        NhanVien* nhanVien = taoNhanVienTheoLoai(loai);
 
-    std::cout << "\n-> NHAN VIEN DUOC CHON DE CAP NHAT:\n";
-    std::cout << *nv << "\n";
-    std::cout << "--------------------------------------------------------\n";
-    std::cout << "Luu y: Ma NV '" << maNV << "' duoc giu nguyen lam dinh danh.\n";
+        std::cout << "\nDinh dang ma: " << TIEN_TO_MA << " + " << SO_CHU_SO_MA
+                  << " chu so (VD: " << TIEN_TO_MA << "0001).\n";
+        const std::string maGoiY = taoMaGoiY();
+        if (!maGoiY.empty()) {
+            std::cout << "Goi y ma tiep theo: " << maGoiY << "\n";
+        }
+        nhanVien->nhap(std::cin);
 
-    std::string maCu = nv->getMaNV();
-    std::cin >> *nv;
-    nv->setMaNV(maCu);
+        if (std::cin.eof()) {
+            delete nhanVien;
+            return false;
+        }
+        if (std::cin.fail()) {
+            std::cin.clear();
+            boQuaDongThua();
+            std::cout << "-> Du lieu nhap khong hop le, vui long nhap lai nhan vien nay.\n";
+            delete nhanVien;
+            continue;
+        }
 
+        std::string maNhanVien = nhanVien->getMaNhanVien();
+        while (!kiemTraDinhDangMa(maNhanVien) || kiemTraTrungMa(maNhanVien)) {
+            if (!kiemTraDinhDangMa(maNhanVien)) {
+                std::cout << "-> Loi: Ma NV '" << maNhanVien << "' sai dinh dang (VD: " << TIEN_TO_MA << "0001)!\n";
+            } else {
+                std::cout << "-> Loi: Ma NV '" << maNhanVien << "' da ton tai! Vui long nhap lai.\n";
+            }
+            if (!docChuoi("Nhap lai Ma Nhan Vien: ", maNhanVien)) {
+                delete nhanVien;
+                return false;
+            }
+        }
+        nhanVien->setMaNhanVien(maNhanVien);
+
+        themNhanVien(nhanVien);
+        std::cout << "-> Them nhan vien moi thanh cong!\n";
+        return true;
+    }
+}
+
+std::string QuanLyNhanSu::taoMaGoiY() const {
+    for (int so = 1; so <= SO_MA_TOI_DA; ++so) {
+        std::string chuSo = std::to_string(so);
+        while (static_cast<int>(chuSo.size()) < SO_CHU_SO_MA) {
+            chuSo.insert(0, 1, '0');
+        }
+        const std::string ma = TIEN_TO_MA + chuSo;
+        if (!kiemTraTrungMa(ma)) {
+            return ma;
+        }
+    }
+    return "";
+}
+
+bool QuanLyNhanSu::kiemTraDinhDangMa(const std::string& maNhanVien) {
+    const std::string::size_type doDaiTienTo = TIEN_TO_MA.size();
+    if (maNhanVien.size() != doDaiTienTo + SO_CHU_SO_MA) {
+        return false;
+    }
+    if (maNhanVien.compare(0, doDaiTienTo, TIEN_TO_MA) != 0) {
+        return false;
+    }
+    for (std::string::size_type i = doDaiTienTo; i < maNhanVien.size(); ++i) {
+        if (maNhanVien[i] < '0' || maNhanVien[i] > '9') {
+            return false;
+        }
+    }
     return true;
 }
 
-void QuanLyNhanSu::CapNhatMenu() {
-    if (dsNhanVien_.empty()) {
-        std::cout << "\n-> Danh sach rong, khong the cap nhat!\n";
-        return;
+void QuanLyNhanSu::boQuaDongThua() {
+    std::string boDem;
+    std::getline(std::cin, boDem);
+}
+
+bool QuanLyNhanSu::docSoNguyen(const std::string& thongBao, int tuGiaTri, int denGiaTri, int& ketQua) {
+    while (true) {
+        std::cout << thongBao;
+        int giaTri = 0;
+        if (std::cin >> giaTri) {
+            boQuaDongThua();
+            if (giaTri >= tuGiaTri && giaTri <= denGiaTri) {
+                ketQua = giaTri;
+                return true;
+            }
+            std::cout << "-> Gia tri phai nam trong khoang [" << tuGiaTri << ", " << denGiaTri << "].\n";
+        } else {
+            if (std::cin.eof()) {
+                return false;
+            }
+            std::cin.clear();
+            boQuaDongThua();
+            std::cout << "-> Du lieu khong hop le, vui long nhap so nguyen.\n";
+        }
     }
+}
 
-    std::string maNV;
-    std::cout << "\n================ CAP NHAT THONG TIN NHAN VIEN ================\n";
-    std::cout << "Nhap Ma NV can cap nhat: ";
-    std::cin >> maNV;
+bool QuanLyNhanSu::docChuoi(const std::string& thongBao, std::string& ketQua) {
+    while (true) {
+        std::cout << thongBao;
+        std::string chuoi;
+        if (!std::getline(std::cin >> std::ws, chuoi)) {
+            return false;
+        }
+        if (!chuoi.empty()) {
+            ketQua = chuoi;
+            return true;
+        }
+        std::cout << "-> Khong duoc de trong, vui long nhap lai.\n";
+    }
+}
 
-    if (CapNhatThongTin(maNV)) {
-        std::cout << "-> Cap nhat thong tin nhan vien co ma '" << maNV << "' THANH CONG!\n";
-        XuatDanhSach();
-    } else {
-        std::cout << "-> Loi: Khong tim thay nhan vien co ma '" << maNV << "' trong he thong!\n";
+std::string QuanLyNhanSu::chuyenThuong(const std::string& chuoi) {
+    std::string ketQua = chuoi;
+    for (char& kyTu : ketQua) {
+        if (kyTu >= 'A' && kyTu <= 'Z') {
+            kyTu = static_cast<char>(kyTu + ('a' - 'A'));
+        }
+    }
+    return ketQua;
+}
+
+NhanVien* QuanLyNhanSu::taoNhanVienTheoLoai(int loai) {
+    switch (loai) {
+        case LOAI_VAN_PHONG:
+            return new NhanVienVanPhong();
+        case LOAI_SAN_XUAT:
+            return new NhanVienSanXuat();
+        default:
+            return new QuanLy();
+    }
+}
+
+void QuanLyNhanSu::inTieuDeBang() {
+    std::cout << std::left
+              << std::setw(DO_RONG_MA) << "Ma NV"
+              << std::setw(DO_RONG_HO_TEN) << "Ho va Ten"
+              << std::setw(DO_RONG_NGAY_SINH) << "Ngay Sinh"
+              << std::setw(DO_RONG_DIA_CHI) << "Dia Chi"
+              << std::setw(DO_RONG_LOAI) << "Chuc Vu / Loai"
+              << std::setw(DO_RONG_CHI_TIET) << "So Luong / Cong"
+              << std::setw(DO_RONG_CHI_TIET) << "Ghi Chu / KPI"
+              << std::setw(DO_RONG_CHI_TIET) << "Thuc Nhan (VND)" << '\n'
+              << std::string(DO_RONG_BANG, '-') << '\n';
+}
+
+void QuanLyNhanSu::inDanhSachNhanVien(const std::vector<NhanVien*>& danhSach) {
+    inTieuDeBang();
+    for (const NhanVien* nhanVien : danhSach) {
+        nhanVien->hienThiThongTin();
     }
 }
