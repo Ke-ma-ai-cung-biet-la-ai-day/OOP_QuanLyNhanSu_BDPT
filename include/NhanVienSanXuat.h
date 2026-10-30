@@ -16,9 +16,9 @@ public:
     virtual ~NhanVienSanXuat();
 
     int getSoSanPham() const;
-    void setSoSanPham(const int& soSP);
+    void setSoSanPham(const int& soSanPham);
     int getDonGiaSanPham() const;
-    void setDonGiaSanPham(const int& donGia);
+    void setDonGiaSanPham(const int& donGiaSanPham);
 
     double tinhHeSoKPI() const;
 
