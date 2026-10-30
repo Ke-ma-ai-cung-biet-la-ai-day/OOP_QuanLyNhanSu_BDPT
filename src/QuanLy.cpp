@@ -10,11 +10,11 @@ QuanLy::QuanLy(const std::string& maNhanVien, const std::string& hoTen, const st
       luongCoBan_(luongCoBan), luongTrachNhiem_(luongTrachNhiem), heSoChucVu_(heSoChucVu) {}
 
 QuanLy::~QuanLy(){}
-double QuanLy::getLuongCoBan() const { return luongCoBan_; }
+int QuanLy::getLuongCoBan() const { return luongCoBan_; }
 void QuanLy::setLuongCoBan(const int& luongCB) { luongCoBan_ = luongCB; }
-double QuanLy::getHeSoChucVu() const { return heSoChucVu_; }
+int QuanLy::getHeSoChucVu() const { return heSoChucVu_; }
 void QuanLy::setHeSoChucVu(const int& heSo) { heSoChucVu_ = heSo; }
-double QuanLy::getLuongTrachNhiem() const { return luongTrachNhiem_; }
+int QuanLy::getLuongTrachNhiem() const { return luongTrachNhiem_; }
 void QuanLy::setLuongTrachNhiem(const int& luongTN) { luongTrachNhiem_ = luongTN; }
 
 double QuanLy::tinhLuong() const {
