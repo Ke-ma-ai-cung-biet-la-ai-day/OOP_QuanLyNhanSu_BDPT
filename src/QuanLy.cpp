@@ -21,11 +21,6 @@ double QuanLy::tinhLuong() const {
     return (luongCoBan_ * heSoChucVu_) + luongTrachNhiem_;
 }
 
-void QuanLy::hienThiThongTin() const{
-    xuat(std::cout);
-    std::cout << std::endl;
-}
-
 void QuanLy::nhap(std::istream& in) {
     NhanVien::nhap(in);
     std::cout << "Nhap luong co ban (VND): ";
@@ -46,3 +41,7 @@ void QuanLy::xuat(std::ostream& out) const {
         << std::setw(18) << dinhDangTien(tinhLuong());
 }
 
+void QuanLy::hienThiThongTin() const{
+    xuat(std::cout);
+    std::cout << std::endl;
+}
