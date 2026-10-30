@@ -33,4 +33,4 @@ public:
 
 };
 
-#endif 
+#endif // QUAN_LY_H
