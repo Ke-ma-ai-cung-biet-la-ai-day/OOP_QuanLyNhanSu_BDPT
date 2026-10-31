@@ -27,7 +27,7 @@ namespace {
     const int DO_RONG_MAN_HINH = 66;
     const int DO_RONG_KET_QUA = 136;
     const int DO_RONG_THONG_KE = 63;
-    const int DO_RONG_BANG = 137;
+    const int DO_RONG_BANG = 139;
     const int DO_RONG_THOAT = 70;
     const int SO_COT = 8;
     const int DO_RONG_COT[SO_COT] = { 10, 20, 12, 16, 14, 14, 18, 16 };
