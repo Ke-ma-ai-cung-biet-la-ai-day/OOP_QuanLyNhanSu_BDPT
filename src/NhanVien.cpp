@@ -23,16 +23,13 @@ NhanVien::NhanVien() {
     ngaySinh_ = "";
     diaChi_ = "";
 }
-
 NhanVien::NhanVien(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi) {
     maNhanVien_ = maNhanVien;
     hoTen_ = hoTen;
     ngaySinh_ = ngaySinh;
     diaChi_ = diaChi;
 }
-
 NhanVien::~NhanVien() {}
-
 const std::string& NhanVien::getMaNhanVien() const { return maNhanVien_; }
 void NhanVien::setMaNhanVien(const std::string& maNhanVien) { maNhanVien_ = maNhanVien; }
 const std::string& NhanVien::getHoTen() const { return hoTen_; }
@@ -53,7 +50,6 @@ std::string NhanVien::dinhDangTien(double soTien) const {
     }
     return s;
 }
-
 void NhanVien::nhap(std::istream& in) {
     std::cout << MauSacNhanVien::XANH_CYAN << MauSacNhanVien::DAM
               << "\n"
@@ -61,27 +57,22 @@ void NhanVien::nhap(std::istream& in) {
               << "                    NHAP THONG TIN NHAN VIEN\n"
               << "===========================================================\n\n"
               << MauSacNhanVien::RESET;
-
     std::cout << MauSacNhanVien::XANH_LA
               << "       Nhap ma nhan vien        : "
               << MauSacNhanVien::TRANG;
     std::getline(in >> std::ws, maNhanVien_);
-
     std::cout << MauSacNhanVien::VANG
               << "       Nhap ho va ten           : "
               << MauSacNhanVien::TRANG;
     std::getline(in >> std::ws, hoTen_);
-
     std::cout << MauSacNhanVien::TIM
               << "       Nhap ngay sinh (dd/mm/yyyy): "
               << MauSacNhanVien::TRANG;
     std::getline(in >> std::ws, ngaySinh_);
-
     std::cout << MauSacNhanVien::XANH_DUONG
               << "       Nhap dia chi             : "
               << MauSacNhanVien::TRANG;
     std::getline(in >> std::ws, diaChi_);
-
     std::cout << MauSacNhanVien::XANH_CYAN
               << "\n===========================================================\n"
               << MauSacNhanVien::RESET;
