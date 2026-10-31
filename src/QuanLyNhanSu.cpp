@@ -27,7 +27,7 @@ namespace {
     const int DO_RONG_MAN_HINH = 66;
     const int DO_RONG_KET_QUA = 136;
     const int DO_RONG_THONG_KE = 63;
-    const int DO_RONG_BANG = 120;
+    const int DO_RONG_BANG = 137;
     const int DO_RONG_THOAT = 70;
     const int SO_COT = 8;
     const int DO_RONG_COT[SO_COT] = { 10, 20, 12, 16, 14, 14, 18, 16 };
@@ -514,9 +514,14 @@ bool QuanLyNhanSu::soSanhTheoMa(const NhanVien* nhanVienA, const NhanVien* nhanV
 void QuanLyNhanSu::inHangBang(const std::vector<std::string>& cacCot) {
     std::cout << std::left;
     for (int i = 0; i < SO_COT; ++i) {
-        std::cout << std::setw(DO_RONG_COT[i]) << cacCot[i];
+        std::cout << MauSacNhanSu::XANH_CYAN
+                  << "| "
+                  << MauSacNhanSu::RESET
+                  << std::setw(DO_RONG_COT[i]) << cacCot[i];
     }
-    std::cout << "\n";
+    std::cout << MauSacNhanSu::XANH_CYAN
+              << "|"
+              << MauSacNhanSu::RESET << "\n";
 }
 
 void QuanLyNhanSu::inDauNhom(const std::string& tieuDe, const std::string& cot5, const std::string& cot6, const std::string& cot7) {
