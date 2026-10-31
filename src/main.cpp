@@ -15,7 +15,7 @@ namespace MauSac {
 }
 
 void hienThiMenu() {
-    std::cout << MauSac::XANH_CYAN << MauSac::DAM
+    std::cout << MauSac::XANH_CYAN
         << "\n================ MENU QUAN LY NHAN SU ================\n"
         << MauSac::RESET
         << MauSac::XANH_LA
