@@ -45,7 +45,6 @@ double NhanVienSanXuat::tinhLuong() const {
 void NhanVienSanXuat::nhap(std::istream& in) {
     NhanVien::nhap(in);
     std::cout << MauSacSanXuat::XANH_CYAN
-              << MauSacSanXuat::DAM
               << "\n"
               << "              THONG TIN NHAN VIEN SAN XUAT\n"
               << "===========================================================\n\n"
