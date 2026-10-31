@@ -39,7 +39,7 @@ namespace {
 // ==========================================
 
 QuanLyNhanSu::QuanLyNhanSu() {
-    napDuLieuTuFile("NhanVien.txt");
+    napDuLieuTuFile("Data/NhanVien.txt");
 }
 
 QuanLyNhanSu::~QuanLyNhanSu() {

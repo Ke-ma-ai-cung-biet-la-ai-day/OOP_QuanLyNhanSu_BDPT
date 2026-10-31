@@ -20,7 +20,7 @@ private:
     QuanLyNhanSu& operator=(const QuanLyNhanSu&) = delete;
 
     // Helper: Nạp dữ liệu tự động từ file lúc khởi tạo
-    void napDuLieuTuFile(const std::string& tenFile = "NhanVien.txt");
+    void napDuLieuTuFile(const std::string& tenFile = "Data/NhanVien.txt");
 
     // Helper: Chức năng Thêm mới
     static NhanVien* taoNhanVienTheoLoai(int loai);
