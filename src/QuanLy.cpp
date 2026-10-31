@@ -1,4 +1,3 @@
-
 #include "QuanLy.h"
 #include <iostream>
 #include <iomanip>
