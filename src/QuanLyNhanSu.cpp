@@ -27,10 +27,10 @@ namespace {
     const int DO_RONG_MAN_HINH = 66;
     const int DO_RONG_KET_QUA = 136;
     const int DO_RONG_THONG_KE = 63;
-    const int DO_RONG_BANG = 139;
+    const int DO_RONG_BANG = 141;
     const int DO_RONG_THOAT = 70;
     const int SO_COT = 8;
-    const int DO_RONG_COT[SO_COT] = { 10, 20, 12, 16, 14, 14, 18, 16 };
+    const int DO_RONG_COT[SO_COT] = { 14, 20, 12, 16, 14, 14, 20, 14 };
 
     const int LOAI_VAN_PHONG = 1;
     const int LOAI_SAN_XUAT = 2;
