@@ -39,7 +39,6 @@ double QuanLy::tinhLuong() const {
 void QuanLy::nhap(std::istream& in) {
     NhanVien::nhap(in);
     std::cout << MauSacQuanLy::XANH_CYAN
-              << "\n"
               << "                 THONG TIN NHAN VIEN QUAN LY\n"
               << "===========================================================\n\n"
               << MauSacQuanLy::RESET;
