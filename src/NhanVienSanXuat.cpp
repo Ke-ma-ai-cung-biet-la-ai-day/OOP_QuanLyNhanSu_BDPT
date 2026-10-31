@@ -59,7 +59,7 @@ void NhanVienSanXuat::nhap(std::istream& in) {
               << "       Nhap don gia san pham     : "
               << MauSacSanXuat::TRANG;
     in >> donGiaSanPham_;
-    std::cout << MauSacSanXuat::XANH_CYAN
+    std::cout << MauSacSanXuat::XANH_CYAN << MauSacSanXuat::DAM
               << "\n===========================================================\n"
               << MauSacSanXuat::RESET;
 }
