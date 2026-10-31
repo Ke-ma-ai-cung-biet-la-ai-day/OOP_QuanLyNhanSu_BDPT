@@ -11,6 +11,18 @@
 #include <iostream>
 #include <sstream>
 
+namespace MauSacNhanSu {
+    const std::string RESET = "\033[0m";
+    const std::string XANH_CYAN = "\033[36m";
+    const std::string XANH_LA = "\033[32m";
+    const std::string XANH_DUONG = "\033[34m";
+    const std::string DO = "\033[31m";
+    const std::string VANG = "\033[33m";
+    const std::string TIM = "\033[35m";
+    const std::string TRANG = "\033[37m";
+    const std::string DAM = "\033[1m";
+}
+
 namespace {
     const int DO_RONG_MAN_HINH = 66;
     const int DO_RONG_KET_QUA = 136;
@@ -57,13 +69,17 @@ void QuanLyNhanSu::giaiPhongBoNho() {
 // 1. CHỨC NĂNG THÊM MỚI
 // ==========================================
 
+
 void QuanLyNhanSu::nhapDanhSach() {
     inTieuDeManHinh("THEM NHAN VIEN MOI");
-    std::cout << "[" << LOAI_VAN_PHONG << "] Nhan vien Van phong (" << TIEN_TO_VP << "xxxx)\n"
+    std::cout << MauSacNhanSu::XANH_LA
+        << "[" << LOAI_VAN_PHONG << "] Nhan vien Van phong (" << TIEN_TO_VP << "xxxx)\n"
+        << MauSacNhanSu::VANG
         << "[" << LOAI_SAN_XUAT << "] Nhan vien San xuat (" << TIEN_TO_SX << "xxxx)\n"
-        << "[" << LOAI_QUAN_LY << "] Quan ly cap cao (" << TIEN_TO_QL << "xxxx)\n";
+        << MauSacNhanSu::TIM
+        << "[" << LOAI_QUAN_LY << "] Quan ly cap cao (" << TIEN_TO_QL << "xxxx)\n"
+        << MauSacNhanSu::RESET;
     inDongKe('-', DO_RONG_MAN_HINH);
-
     int loai = 0;
     if (!docSoNguyen("Chon loai nhan vien (1-3): ", LOAI_VAN_PHONG, LOAI_QUAN_LY, loai)) {
         return;
@@ -101,16 +117,18 @@ bool QuanLyNhanSu::kiemTraTrungMa(const std::string& maNhanVien) const {
 
 void QuanLyNhanSu::giaoDienKetQuaXoa(QuanLyNhanSu& quanLy, std::string& maNhanVien) {
     inTieuDeManHinh("XOA NHAN VIEN");
-
     if (!docChuoi("Nhap Ma nhan vien can xoa: ", maNhanVien)) {
         return;
     }
-
     if (quanLy.xoaNhanVien(maNhanVien)) {
-        std::cout << "XOA NHAN VIEN CO MA '" << maNhanVien << "' THANH CONG!\n";
+        std::cout << MauSacNhanSu::XANH_LA
+                  << "XOA NHAN VIEN CO MA '" << maNhanVien << "' THANH CONG!\n"
+                  << MauSacNhanSu::RESET;
     }
     else {
-        std::cout << "KHONG TIM THAY NHAN VIEN CO MA '" << maNhanVien << "' DE XOA!\n";
+        std::cout << MauSacNhanSu::DO
+                  << "KHONG TIM THAY NHAN VIEN CO MA '" << maNhanVien << "' DE XOA!\n"
+                  << MauSacNhanSu::RESET;
     }
 }
 
@@ -268,7 +286,10 @@ double QuanLyNhanSu::thongKeQuyLuong() const {
         << "3. Nhan vien San xuat: " << soSanXuat << " nguoi\n"
         << "4. Quan ly cap cao: " << soQuanLy << " nguoi\n";
     inDongKe('-', DO_RONG_THONG_KE);
-    std::cout << "TONG QUY LUONG PHAI CHI: " << dinhDangSoTien(tongLuong) << " VND\n";
+    std::cout << MauSacNhanSu::XANH_LA
+              << MauSacNhanSu::DAM
+              << "TONG QUY LUONG PHAI CHI: " << dinhDangSoTien(tongLuong) << " VND\n"
+              << MauSacNhanSu::RESET;
     return tongLuong;
 }
 
@@ -391,7 +412,9 @@ void QuanLyNhanSu::nhapNhanVienMoi(QuanLyNhanSu& quanLy, int loai) {
         if (std::cin.fail()) {
             std::cin.clear();
             boQuaDongThua();
-            std::cout << "DU LIEU NHAP KHONG HOP LE, VUI LONG NHAP LAI!\n";
+            std::cout << MauSacNhanSu::DO
+                      << "DU LIEU NHAP KHONG HOP LE, VUI LONG NHAP LAI!\n"
+                      << MauSacNhanSu::RESET;
             delete nhanVien;
             continue;
         }
@@ -422,7 +445,9 @@ void QuanLyNhanSu::nhapNhanVienMoi(QuanLyNhanSu& quanLy, int loai) {
         nhanVien->setMaNhanVien(maNhanVien);
 
         quanLy.themNhanVien(nhanVien);
-        std::cout << "THEM NHAN VIEN MOI THANH CONG!\n";
+        std::cout << MauSacNhanSu::XANH_LA
+                  << "THEM NHAN VIEN MOI THANH CONG!\n"
+                  << MauSacNhanSu::RESET;
         return;
     }
 }
@@ -495,16 +520,27 @@ void QuanLyNhanSu::inHangBang(const std::vector<std::string>& cacCot) {
 }
 
 void QuanLyNhanSu::inDauNhom(const std::string& tieuDe, const std::string& cot5, const std::string& cot6, const std::string& cot7) {
-    std::cout << tieuDe << "\n";
+    std::cout << MauSacNhanSu::TIM
+              << MauSacNhanSu::DAM
+              << tieuDe << "\n"
+              << MauSacNhanSu::RESET;
+    std::cout << MauSacNhanSu::XANH_CYAN;
     inDongKe('-', DO_RONG_BANG);
+    std::cout << MauSacNhanSu::VANG
+              << MauSacNhanSu::DAM;
     inHangBang({ "Ma NV", "Ho va Ten", "Ngay Sinh", "Dia Chi", cot5, cot6, cot7, "Thuc Nhan (VND)" });
+    std::cout << MauSacNhanSu::XANH_CYAN;
     inDongKe('-', DO_RONG_BANG);
+    std::cout << MauSacNhanSu::RESET;
 }
-
 void QuanLyNhanSu::inCuoiNhom(const std::string& tenNhom, int soLuong, double tongLuong) {
+    std::cout << MauSacNhanSu::XANH_CYAN;
     inDongKe('-', DO_RONG_BANG);
-    std::cout << "=> Subtotal " << tenNhom << ": " << soLuong << " nhan vien | Tong luong: "
-        << dinhDangSoTien(tongLuong) << " VND\n";
+    std::cout << MauSacNhanSu::XANH_LA
+              << MauSacNhanSu::DAM
+              << "=> Subtotal " << tenNhom << ": " << soLuong << " nhan vien | Tong luong: "
+              << dinhDangSoTien(tongLuong) << " VND\n"
+              << MauSacNhanSu::RESET;
 }
 
 void QuanLyNhanSu::inNhomVanPhong(const std::vector<const NhanVienVanPhong*>& danhSach) {
@@ -630,6 +666,11 @@ void QuanLyNhanSu::inDongKe(char kyTu, int doDai) {
 
 void QuanLyNhanSu::inTieuDeManHinh(const std::string& tieuDe) {
     int doDaiMoiBen = (DO_RONG_MAN_HINH - static_cast<int>(tieuDe.size()) - 2) / 2;
-    std::cout << "\n" << std::string(doDaiMoiBen, '=') << " " << tieuDe << " "
-        << std::string(doDaiMoiBen, '=') << "\n";
+    std::cout << MauSacNhanSu::XANH_CYAN
+              << MauSacNhanSu::DAM
+              << "\n"
+              << std::string(doDaiMoiBen, '=')
+              << " " << tieuDe << " "
+              << std::string(doDaiMoiBen, '=')
+              << MauSacNhanSu::RESET << "\n";
 }
