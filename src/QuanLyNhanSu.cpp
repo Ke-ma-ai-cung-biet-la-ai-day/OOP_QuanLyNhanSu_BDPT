@@ -154,7 +154,7 @@ void QuanLyNhanSu::timKiemMenu() {
     }
 
     inTieuDeManHinh("TIM KIEM NHAN VIEN");
-    std::cout << "[" << TIM_THEO_MA << "] Tim kiem chinh xac theo Ma NV\n"
+    std::cout << "[" << TIM_THEO_MA << "] Tim kiem chinh xac theo Ma Nhan Vien\n"
         << "[" << TIM_THEO_TEN << "] Tim kiem theo Tu khoa Ho va Ten\n";
     inDongKe('-', DO_RONG_MAN_HINH);
 
@@ -551,11 +551,11 @@ void QuanLyNhanSu::inCuoiNhom(const std::string& tenNhom, int soLuong, double to
 void QuanLyNhanSu::inNhomVanPhong(const std::vector<const NhanVienVanPhong*>& danhSach) {
     double tongLuong = 0.0;
     inDauNhom("I. NHAN VIEN VAN PHONG (" + std::to_string(danhSach.size()) + " nguoi)",
-        "Ngay Cong", "Gio OT", "He so KPI");
+        "Ngay Cong", "Gio Tang Ca", "He so KPI");
     for (const NhanVienVanPhong* nhanVien : danhSach) {
         inHangBang({ nhanVien->getMaNhanVien(), nhanVien->getHoTen(), nhanVien->getNgaySinh(), nhanVien->getDiaChi(),
                     std::to_string(nhanVien->getSoNgayLamViec()) + " ngay",
-                    std::to_string(nhanVien->getSoGioTangCa()) + "h OT",
+                    std::to_string(nhanVien->getSoGioTangCa()) + "h",
                     dinhDangThapPhan(nhanVien->tinhHeSoKPI(), 2),
                     dinhDangSoTien(nhanVien->tinhLuong()) });
         tongLuong += nhanVien->tinhLuong();
