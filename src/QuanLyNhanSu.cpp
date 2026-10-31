@@ -166,7 +166,7 @@ void QuanLyNhanSu::timKiemMenu() {
     std::vector<NhanVien*> ketQua;
     if (luaChon == TIM_THEO_MA) {
         std::string maNhanVien;
-        if (!docChuoi("Nhap Ma NV can tim: ", maNhanVien)) {
+        if (!docChuoi("Nhap ma nhan vien can tim: ", maNhanVien)) {
             return;
         }
         NhanVien* nhanVien = timKiemTheoMa(maNhanVien);
@@ -430,11 +430,11 @@ void QuanLyNhanSu::nhapNhanVienMoi(QuanLyNhanSu& quanLy, int loai) {
             }
 
             if (!hopLeDinhDang || !dungTienToLoai) {
-                std::cout << "LOI: Ma NV '" << maNhanVien << "' phai bat dau bang '"
-                    << tienToYeuCau << "' va co 4 chu so (VD: " << tienToYeuCau << "0001)!\n";
+                std::cout << MauSacNhanSu::VANG<<"LOI: Ma nhan vien '" << maNhanVien << "' phai bat dau bang '"
+                    << tienToYeuCau << "' va co 4 chu so (VD: " << tienToYeuCau << "0001)!\n"<<MauSacNhanSu::RESET;
             }
             else {
-                std::cout << "LOI: Ma NV '" << maNhanVien << "' da ton tai!\n";
+                std::cout << MauSacNhanSu::DO << "LOI: Ma nhan vien '" << maNhanVien << "' da ton tai!\n"<< MauSacNhanSu::RESET;
             }
 
             if (!docChuoi("Nhap lai Ma Nhan Vien: ", maNhanVien)) {
@@ -533,7 +533,7 @@ void QuanLyNhanSu::inDauNhom(const std::string& tieuDe, const std::string& cot5,
     inDongKe('-', DO_RONG_BANG);
     std::cout << MauSacNhanSu::VANG
               << MauSacNhanSu::DAM;
-    inHangBang({ "Ma NV", "Ho va Ten", "Ngay Sinh", "Dia Chi", cot5, cot6, cot7, "Thuc Nhan (VND)" });
+    inHangBang({ "Ma nhan vien", "Ho va ten", "Ngay sinh", "Dia chi", cot5, cot6, cot7, "Thuc nhan (VND)" });
     std::cout << MauSacNhanSu::XANH_CYAN;
     inDongKe('-', DO_RONG_BANG);
     std::cout << MauSacNhanSu::RESET;
@@ -551,7 +551,7 @@ void QuanLyNhanSu::inCuoiNhom(const std::string& tenNhom, int soLuong, double to
 void QuanLyNhanSu::inNhomVanPhong(const std::vector<const NhanVienVanPhong*>& danhSach) {
     double tongLuong = 0.0;
     inDauNhom("I. NHAN VIEN VAN PHONG (" + std::to_string(danhSach.size()) + " nguoi)",
-        "Ngay Cong", "Gio Tang Ca", "He so KPI");
+        "Ngay cong", "Gio tang ca", "He so KPI");
     for (const NhanVienVanPhong* nhanVien : danhSach) {
         inHangBang({ nhanVien->getMaNhanVien(), nhanVien->getHoTen(), nhanVien->getNgaySinh(), nhanVien->getDiaChi(),
                     std::to_string(nhanVien->getSoNgayLamViec()) + " ngay",
