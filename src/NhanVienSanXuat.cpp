@@ -46,7 +46,7 @@ void NhanVienSanXuat::nhap(std::istream& in) {
     NhanVien::nhap(in);
     std::cout << MauSacSanXuat::XANH_CYAN
               << MauSacSanXuat::DAM
-              << "\n===========================================================\n"
+              << "\n"
               << "              THONG TIN NHAN VIEN SAN XUAT\n"
               << "===========================================================\n\n"
               << MauSacSanXuat::RESET;
