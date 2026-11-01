@@ -3,73 +3,107 @@
 #include <iomanip>
 #include <string>
 
-// Ma mau Console
 namespace MauSacSanXuat {
     const std::string RESET = "\033[0m";
-    const std::string XANH_CYAN = "\033[36m";
-    const std::string XANH_LA = "\033[32m";
-    const std::string XANH_DUONG = "\033[34m";
-    const std::string VANG = "\033[33m";
-    const std::string TIM = "\033[35m";
-    const std::string TRANG = "\033[37m";
-    const std::string DAM = "\033[1m";
+        const std::string CAM = "\033[38;5;208m";
+    const std::string HONG = "\033[38;5;206m";
+        const std::string TRANG = "\033[37m";
+        const std::string DO = "\033[31m";
 }
 
-NhanVienSanXuat::NhanVienSanXuat()
-    : NhanVien(), soSanPham_(0), donGiaSanPham_(0) {}
-
-NhanVienSanXuat::NhanVienSanXuat(const std::string& maNhanVien, const std::string& hoTen, const std::string& ngaySinh, const std::string& diaChi,
-                                 const int& soSanPham, const int& donGiaSanPham)
-    : NhanVien(maNhanVien, hoTen, ngaySinh, diaChi),
-      soSanPham_(soSanPham), donGiaSanPham_(donGiaSanPham) {}
-
+NhanVienSanXuat::NhanVienSanXuat() : NhanVien(), soSanPham_(0), donGiaSanPham_(0) {}
+NhanVienSanXuat::NhanVienSanXuat(const std::string& ma, const std::string& ten, const std::string& ns, const std::string& dc,
+    const int& ssp, const int& dgsp)
+    : NhanVien(ma, ten, ns, dc), soSanPham_(ssp), donGiaSanPham_(dgsp) {
+}
 NhanVienSanXuat::~NhanVienSanXuat() {}
 
 int NhanVienSanXuat::getSoSanPham() const { return soSanPham_; }
-void NhanVienSanXuat::setSoSanPham(const int& soSanPham) { soSanPham_ = soSanPham; }
+void NhanVienSanXuat::setSoSanPham(const int& ssp) { soSanPham_ = ssp; }
 int NhanVienSanXuat::getDonGiaSanPham() const { return donGiaSanPham_; }
-void NhanVienSanXuat::setDonGiaSanPham(const int& donGiaSanPham) { donGiaSanPham_ = donGiaSanPham; }
+void NhanVienSanXuat::setDonGiaSanPham(const int& dgsp) { donGiaSanPham_ = dgsp; }
 
 double NhanVienSanXuat::tinhHeSoKPI() const {
-    if (soSanPham_ > 110) return 1.2;
-    if (soSanPham_ > 100) return 1.1;
-    if (soSanPham_ == 100) return 1.0;
-    if (soSanPham_ >= 80) return 0.8;
-    return 0.85;
+    if (soSanPham_ > 110) return 1.2; 
+        if (soSanPham_ > 100) return 1.1; 
+            if (soSanPham_ == 100) return 1.0; 
+                if (soSanPham_ >= 80) return 0.8; 
+                    return 0.85; 
 }
-double NhanVienSanXuat::tinhLuong() const {
-    double luongCoBan = soSanPham_ * donGiaSanPham_;
-    int chenhLech = soSanPham_ - DINH_MUC;
-    return luongCoBan + (chenhLech * donGiaSanPham_ * tinhHeSoKPI());
-}
-void NhanVienSanXuat::nhap(std::istream& in) {
-    NhanVien::nhap(in);
-    std::cout << MauSacSanXuat::XANH_CYAN
-              << "              THONG TIN NHAN VIEN SAN XUAT\n"
-              << "===========================================================\n\n"
-              << MauSacSanXuat::RESET;
 
-    std::cout << MauSacSanXuat::XANH_LA
-              << "       Nhap so san pham lam duoc : "
-              << MauSacSanXuat::TRANG;
-    in >> soSanPham_;
-    std::cout << MauSacSanXuat::VANG
-              << "       Nhap don gia san pham     : "
-              << MauSacSanXuat::TRANG;
-    in >> donGiaSanPham_;
-    std::cout << MauSacSanXuat::XANH_CYAN << MauSacSanXuat::DAM
-              << "\n===========================================================\n"
-              << MauSacSanXuat::RESET;
+double NhanVienSanXuat::tinhLuong() const {
+    double luongCoBan = soSanPham_ * donGiaSanPham_; 
+        int chenhLech = soSanPham_ - DINH_MUC; 
+        return luongCoBan + (chenhLech * donGiaSanPham_ * tinhHeSoKPI()); 
 }
+
+void NhanVienSanXuat::nhap(std::istream& in) {
+    NhanVien::nhap(in); 
+
+        const int CHIEU_RONG_KHUNG = 66; 
+        const int LE_CAN_GIUA = (142 - CHIEU_RONG_KHUNG) / 2; 
+        const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4; 
+        const std::string pad(LE_CAN_GIUA, ' '); 
+
+        auto inVaDocSo = [&](const std::string& mau, const std::string& nhan, int minVal, int maxVal, int& giaTri) {
+        while (true) {
+            std::cout << pad
+                << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
+                << mau << std::left << std::setw(26) << nhan
+                << ": " << MauSacSanXuat::RESET;
+
+            if (in >> giaTri && giaTri >= minVal && giaTri <= maxVal) {
+                std::string strVal = std::to_string(giaTri); 
+                    int doDaiDuLieu = (int)strVal.length(); 
+                    int khoangDemPhai = KHOANG_TRONG - 2 - 26 - 2 - doDaiDuLieu;
+                    if (khoangDemPhai < 1) khoangDemPhai = 1; 
+
+                        std::cout << "\033[1A\r" << pad
+                        << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
+                        << mau << std::left << std::setw(26) << nhan
+                        << ": " << MauSacSanXuat::RESET
+                        << MauSacSanXuat::TRANG << strVal << MauSacSanXuat::RESET
+                        << std::string(khoangDemPhai, ' ')
+                        << MauSacSanXuat::CAM << "||\n" << MauSacSanXuat::RESET;
+                break;
+            }
+
+            in.clear();
+            std::string dem;
+            std::getline(in, dem);
+            std::string msg = "Gia tri tu " + std::to_string(minVal) + " den " + std::to_string(maxVal) + "!";
+            int lePhaiLoi = KHOANG_TRONG - 2 - static_cast<int>(msg.length());
+            if (lePhaiLoi < 1) lePhaiLoi = 1;
+
+            std::cout << pad << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
+                << MauSacSanXuat::DO << msg << MauSacSanXuat::RESET
+                << std::string(lePhaiLoi, ' ')
+                << MauSacSanXuat::CAM << "||\n" << MauSacSanXuat::RESET;
+        }
+        };
+
+    inVaDocSo(MauSacSanXuat::CAM, "So san pham lam duoc", 0, 500, soSanPham_);
+    inVaDocSo(MauSacSanXuat::HONG, "Don gia san pham (VND)", 40000, 80000, donGiaSanPham_);
+
+    std::string boDem;
+    std::getline(in, boDem);
+
+        std::cout << pad
+        << MauSacSanXuat::CAM
+        << "++" << std::string(KHOANG_TRONG, '=') << "++\n"
+        << MauSacSanXuat::RESET;
+}
+
 void NhanVienSanXuat::xuat(std::ostream& out) const {
-    NhanVien::xuat(out);
-    out << std::left
+    NhanVien::xuat(out); 
+        out << std::left
         << std::setw(20) << "San xuat"
         << std::setw(18) << (std::to_string(soSanPham_) + " san pham")
-        << std::setw(18) << ("KPI " + std::to_string(tinhHeSoKPI()).substr(0,3))
+        << std::setw(18) << ("KPI " + std::to_string(tinhHeSoKPI()).substr(0, 3))
         << std::setw(18) << dinhDangTien(tinhLuong());
 }
+
 void NhanVienSanXuat::hienThiThongTin() const {
     xuat(std::cout);
-    std::cout << std::endl;
+        std::cout << std::endl;
 }
