@@ -10,16 +10,16 @@ OOP_QuanLyNhanSu_BDPT/
 │
 ├── include                        # File Headers (.h)
 │   ├── NhanVien.h                 # Lớp cơ sở trừu tượng NhanVien
-│   ├── NhanVienVanPhong.h         # Lớp kế thừa: Nhân viên Văn phòng
 │   ├── NhanVienSanXuat.h          # Lớp kế thừa: Nhân viên Sản xuất
+│   ├── NhanVienVanPhong.h         # Lớp kế thừa: Nhân viên Văn phòng
 │   ├── QuanLy.h                   # Lớp kế thừa: Quản lý
 │   └── QuanLyNhanSu.h             # Lớp điều phối hệ thống & giao diện menu
 │
 ├── src                            # File Sources (.cpp)
 │   ├── main.cpp                   # Điểm khởi chạy chương trình & vòng lặp Menu chính
 │   ├── NhanVien.cpp               # Cài đặt phương thức chung & form nhập cơ bản
-│   ├── NhanVienVanPhong.cpp       # Cài đặt tính lương, KPI & form nhập nhân viên văn phòng
 │   ├── NhanVienSanXuat.cpp        # Cài đặt tính lương, KPI & form nhập nhân viên sản xuất
+│   ├── NhanVienVanPhong.cpp       # Cài đặt tính lương, KPI & form nhập nhân viên văn phòng
 │   ├── QuanLy.cpp                 # Cài đặt tính lương & form nhập quản lý
 │   └── QuanLyNhanSu.cpp           # Cài đặt 5 chức năng chính & tiện ích bảng/hộp thoại ANSI
 │
