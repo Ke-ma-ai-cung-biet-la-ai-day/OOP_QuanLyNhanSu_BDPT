@@ -38,42 +38,48 @@ double NhanVienSanXuat::tinhLuong() const {
 }
 
 void NhanVienSanXuat::nhap(std::istream& in) {
-    NhanVien::nhap(in); 
+    NhanVien::nhap(in);
 
-        const int CHIEU_RONG_KHUNG = 66; 
-        const int LE_CAN_GIUA = (142 - CHIEU_RONG_KHUNG) / 2; 
-        const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4; 
-        const std::string pad(LE_CAN_GIUA, ' '); 
+    const int CHIEU_RONG_KHUNG = 66;
+    const int LE_CAN_GIUA = (142 - CHIEU_RONG_KHUNG) / 2;
+    const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;
+    const std::string pad(LE_CAN_GIUA, ' ');
 
-        auto inVaDocSo = [&](const std::string& mau, const std::string& nhan, int minVal, int maxVal, int& giaTri) {
+    auto inVaDocSo = [&](const std::string& mau, const std::string& nhan, int minVal, int maxVal, int& giaTri) {
         while (true) {
             std::cout << pad
                 << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
                 << mau << std::left << std::setw(26) << nhan
                 << ": " << MauSacSanXuat::RESET;
 
-            if (in >> giaTri && giaTri >= minVal && giaTri <= maxVal) {
-                std::string strVal = std::to_string(giaTri); 
-                    int doDaiDuLieu = (int)strVal.length(); 
-                    int khoangDemPhai = KHOANG_TRONG - 2 - 26 - 2 - doDaiDuLieu;
-                    if (khoangDemPhai < 1) khoangDemPhai = 1; 
+            std::string chuoiNhap;
+            std::getline(in >> std::ws, chuoiNhap);
 
-                        std::cout << "\033[1A\r" << pad
-                        << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
-                        << mau << std::left << std::setw(26) << nhan
-                        << ": " << MauSacSanXuat::RESET
-                        << MauSacSanXuat::TRANG << strVal << MauSacSanXuat::RESET
-                        << std::string(khoangDemPhai, ' ')
-                        << MauSacSanXuat::CAM << "||\n" << MauSacSanXuat::RESET;
-                break;
+            int doDaiDuLieu = static_cast<int>(chuoiNhap.length());
+            int khoangDemPhai = KHOANG_TRONG - 4 - 26 - doDaiDuLieu;
+            if (khoangDemPhai < 0) khoangDemPhai = 0;
+
+            std::cout << "\033[1A\r" << pad
+                << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
+                << mau << std::left << std::setw(26) << nhan
+                << ": " << MauSacSanXuat::RESET
+                << MauSacSanXuat::TRANG << chuoiNhap << MauSacSanXuat::RESET
+                << std::string(khoangDemPhai, ' ')
+                << MauSacSanXuat::CAM << "||\n" << MauSacSanXuat::RESET;
+
+            try {
+                size_t pos = 0;
+                int val = std::stoi(chuoiNhap, &pos);
+                if (pos == chuoiNhap.length() && val >= minVal && val <= maxVal) {
+                    giaTri = val;
+                    break;
+                }
             }
+            catch (...) {}
 
-            in.clear();
-            std::string dem;
-            std::getline(in, dem);
             std::string msg = "Gia tri tu " + std::to_string(minVal) + " den " + std::to_string(maxVal) + "!";
             int lePhaiLoi = KHOANG_TRONG - 2 - static_cast<int>(msg.length());
-            if (lePhaiLoi < 1) lePhaiLoi = 1;
+            if (lePhaiLoi < 0) lePhaiLoi = 0;
 
             std::cout << pad << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
                 << MauSacSanXuat::DO << msg << MauSacSanXuat::RESET
@@ -85,10 +91,7 @@ void NhanVienSanXuat::nhap(std::istream& in) {
     inVaDocSo(MauSacSanXuat::CAM, "So san pham lam duoc", 0, 500, soSanPham_);
     inVaDocSo(MauSacSanXuat::HONG, "Don gia san pham (VND)", 40000, 80000, donGiaSanPham_);
 
-    std::string boDem;
-    std::getline(in, boDem);
-
-        std::cout << pad
+    std::cout << pad
         << MauSacSanXuat::CAM
         << "++" << std::string(KHOANG_TRONG, '=') << "++\n"
         << MauSacSanXuat::RESET;

@@ -51,7 +51,7 @@ namespace {
 
         if (m < 1 || m > 12) return false;
         if (d < 1 || d > 31) return false;
-        if (y < 1960 || y > 2006) return false;
+        if (y < 1960 || y > 2008) return false;
         return true;
     }
 }
@@ -85,8 +85,8 @@ std::string NhanVien::dinhDangTien(double soTien) const {
 
 void NhanVien::nhap(std::istream& in) {
     const int CHIEU_RONG_KHUNG = 66;
-    const int LE_CAN_GIUA = (142 - CHIEU_RONG_KHUNG) / 2; // 38 khoang trang[cite: 46]
-    const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;        // 62 ky tu long khung[cite: 46]
+    const int LE_CAN_GIUA = (142 - CHIEU_RONG_KHUNG) / 2; // 38 khoang trang
+    const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;        // 62 ky tu long khung
     const std::string pad(LE_CAN_GIUA, ' ');
 
     std::cout << "\n" << pad << MauSacNhanVien::CAM
@@ -119,25 +119,27 @@ void NhanVien::nhap(std::istream& in) {
 
                 std::getline(in >> std::ws, giaTri);
 
-                if (kiemTraHopLe == nullptr || kiemTraHopLe(giaTri)) {
-                    // Tinh do dai dem de vien phai khep kin
-                    int doDaiDuLieu = (int)giaTri.length();
-                    int khoangDemPhai = KHOANG_TRONG - 2 - 26 - 2 - doDaiDuLieu;
-                    if (khoangDemPhai < 1) khoangDemPhai = 1;
+                // Tinh khoang dem phai cho dong nhap lieu: 62 - (2 + 26 + 2) - doDai = 32 - doDai
+                int doDaiDuLieu = static_cast<int>(giaTri.length());
+                int khoangDemPhai = KHOANG_TRONG - 30 - doDaiDuLieu;
+                if (khoangDemPhai < 0) khoangDemPhai = 0;
 
-                    std::cout << "\033[1A\r" << pad
-                        << MauSacNhanVien::CAM << "||  " << MauSacNhanVien::RESET
-                        << mau << std::left << std::setw(26) << nhan
-                        << ": " << MauSacNhanVien::RESET
-                        << MauSacNhanVien::TRANG << giaTri << MauSacNhanVien::RESET
-                        << std::string(khoangDemPhai, ' ')
-                        << MauSacNhanVien::CAM << "||\n" << MauSacNhanVien::RESET;
+                std::cout << "\033[1A\r" << pad
+                    << MauSacNhanVien::CAM << "||  " << MauSacNhanVien::RESET
+                    << mau << std::left << std::setw(26) << nhan
+                    << ": " << MauSacNhanVien::RESET
+                    << MauSacNhanVien::TRANG << giaTri << MauSacNhanVien::RESET
+                    << std::string(khoangDemPhai, ' ')
+                    << MauSacNhanVien::CAM << "||\n" << MauSacNhanVien::RESET;
+
+                // Kiem tra hop le
+                if (kiemTraHopLe == nullptr || kiemTraHopLe(giaTri)) {
                     break;
                 }
 
-                // In thong bao loi can chinh vien phai chuan xac
+                // Tinh khoang dem phai cho dong thong bao loi: 62 - 2 (le trai) - doDaiLoi
                 int lePhaiLoi = KHOANG_TRONG - 2 - static_cast<int>(thongBaoLoi.length());
-                if (lePhaiLoi < 1) lePhaiLoi = 1;
+                if (lePhaiLoi < 0) lePhaiLoi = 0;
 
                 std::cout << pad << MauSacNhanVien::CAM << "||  " << MauSacNhanVien::RESET
                     << MauSacNhanVien::DO << thongBaoLoi << MauSacNhanVien::RESET
@@ -146,13 +148,11 @@ void NhanVien::nhap(std::istream& in) {
             }
         };
 
-    // Ma nhan vien duoc kiem tra o ham ngoai
     inVaDocChuoi(MauSacNhanVien::XANH_LA_SANG, "Ma nhan vien", maNhanVien_, nullptr, "");
     inVaDocChuoi(MauSacNhanVien::VANG, "Ho va ten", hoTen_, kiemTraTenHopLe, "Ten khong duoc chua so/de trong!");
     inVaDocChuoi(MauSacNhanVien::TIM_NHAT, "Ngay sinh (dd/mm/yyyy)", ngaySinh_, kiemTraNgaySinhHopLe, "Dinh dang dd/mm/yyyy (18-65 tuoi)!");
     inVaDocChuoi(MauSacNhanVien::XANH_NGOC, "Dia chi", diaChi_, [](const std::string& s) { return !s.empty() && !laChuoiKhoangTrang(s); }, "Dia chi khong duoc de trong!");
 }
-
 void NhanVien::xuat(std::ostream& out) const {
     out << std::left
         << std::setw(10) << maNhanVien_

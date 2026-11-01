@@ -98,7 +98,7 @@ void QuanLyNhanSu::nhapDanhSach() {
         << MauSacNhanSu::VANG
         << pad << "[" << LOAI_SAN_XUAT << "] Nhan vien San xuat (" << TIEN_TO_SX << "xxxx)\n"
         << MauSacNhanSu::TIM
-        << pad << "[" << LOAI_QUAN_LY << "] Quan ly cap cao (" << TIEN_TO_QL << "xxxx)\n"
+        << pad << "[" << LOAI_QUAN_LY << "] Quan ly (" << TIEN_TO_QL << "xxxx)\n"
         << MauSacNhanSu::RESET; 
 
     std::cout << MauSacNhanSu::XANH_CYAN << MauSacNhanSu::DAM;
@@ -417,8 +417,8 @@ void QuanLyNhanSu::timKiemMenu() {
         danhSachThuocTinh.push_back({ MauSacNhanSu::XANH_CYAN, "He so KPI", dinhDangThapPhan(sx->tinhHeSoKPI(), 2) });
     }
     else if (const QuanLy* ql = dynamic_cast<const QuanLy*>(nv)) {
-        tenBoPhan = "Quan ly cap cao";
-        thongBaoLoai = "KET QUA: QUAN LY CAP CAO (" + nv->getMaNhanVien() + ")";
+        tenBoPhan = "Quan ly";
+        thongBaoLoai = "KET QUA: QUAN LY (" + nv->getMaNhanVien() + ")";
         danhSachThuocTinh.push_back({ MauSacNhanSu::HONG, "Luong co ban", dinhDangSoTien(ql->getLuongCoBan()) + " VND" });
         danhSachThuocTinh.push_back({ MauSacNhanSu::VANG_SANG, "He so chuc vu", dinhDangThapPhan(ql->getHeSoChucVu(), 2) });
         danhSachThuocTinh.push_back({ MauSacNhanSu::TIM, "Luong trach nhiem", dinhDangSoTien(ql->getLuongTrachNhiem()) + " VND" });
@@ -595,7 +595,7 @@ void QuanLyNhanSu::inNhomSanXuat(const std::vector<const NhanVienSanXuat*>& danh
 
 void QuanLyNhanSu::inNhomQuanLy(const std::vector<const QuanLy*>& danhSach) {
     double tongLuong = 0.0;
-        inDauNhom("III. QUAN LY CAP CAO (" + std::to_string(danhSach.size()) + " nguoi)",
+        inDauNhom("III. QUAN LY (" + std::to_string(danhSach.size()) + " nguoi)",
             "Luong co ban", "He so chuc vu", "Luong trach nhiem");
         for (const QuanLy* nhanVien : danhSach) {
             inHangBang({ nhanVien->getMaNhanVien(), nhanVien->getHoTen(), nhanVien->getNgaySinh(), nhanVien->getDiaChi(),
@@ -610,80 +610,111 @@ void QuanLyNhanSu::inNhomQuanLy(const std::vector<const QuanLy*>& danhSach) {
 
 double QuanLyNhanSu::thongKeQuyLuong() const {
     int soVanPhong = 0;
-        int soSanXuat = 0;
-        int soQuanLy = 0;
-        double tongLuong = 0.0;
+    int soSanXuat = 0;
+    int soQuanLy = 0;
+    double tongLuong = 0.0;
 
-        for (const NhanVien* nhanVien : dsNhanVien_) {
-            tongLuong += nhanVien->tinhLuong();
-                if (dynamic_cast<const NhanVienVanPhong*>(nhanVien) != nullptr) {
-                    ++soVanPhong;
-                }
-                else if (dynamic_cast<const NhanVienSanXuat*>(nhanVien) != nullptr) {
-                    ++soSanXuat;
-                }
-                else if (dynamic_cast<const QuanLy*>(nhanVien) != nullptr) {
-                    ++soQuanLy;
-                }
+    for (const NhanVien* nhanVien : dsNhanVien_) {
+        tongLuong += nhanVien->tinhLuong();
+        if (dynamic_cast<const NhanVienVanPhong*>(nhanVien) != nullptr) {
+            ++soVanPhong;
         }
+        else if (dynamic_cast<const NhanVienSanXuat*>(nhanVien) != nullptr) {
+            ++soSanXuat;
+        }
+        else if (dynamic_cast<const QuanLy*>(nhanVien) != nullptr) {
+            ++soQuanLy;
+        }
+    }
 
     const int CHIEU_RONG_KHUNG = 66;
-        const int LE_CAN_GIUA = (DO_RONG_MAN_HINH - CHIEU_RONG_KHUNG) / 2; 
-        const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;
+    const int LE_CAN_GIUA = (DO_RONG_MAN_HINH - CHIEU_RONG_KHUNG) / 2; // 38 khoang trang
+    const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;                     // 62 ky tu ben trong ||
     const std::string pad(LE_CAN_GIUA, ' ');
-        const std::string MAU_VIEN = MauSacNhanSu::XANH_CYAN;
+    const std::string MAU_VIEN = MauSacNhanSu::XANH_CYAN;
 
-        auto inDongThongKe = [&](const std::string& mauNhan, const std::string& nhan, const std::string& mauGiaTri, const std::string& giaTri) {
-        int doDaiDuLieu = static_cast<int>(giaTri.length());
-            int khoangDemPhai = KHOANG_TRONG - 2 - 26 - 2 - doDaiDuLieu;
-            if (khoangDemPhai < 1) khoangDemPhai = 1;
+    // 1. Gom toan bo danh sach muc can hien thi
+    struct MucThongKe {
+        std::string mauNhan;
+        std::string nhan;
+        std::string mauGiaTri;
+        std::string giaTri;
+    };
 
-                std::cout << pad
-                << MAU_VIEN << "||  " << MauSacNhanSu::RESET
-                << mauNhan << std::left << std::setw(26) << nhan
-                << ": " << MauSacNhanSu::RESET
-                << mauGiaTri << giaTri << MauSacNhanSu::RESET
-                << std::string(khoangDemPhai, ' ')
-                << MAU_VIEN << "||\n" << MauSacNhanSu::RESET;
-        };
+    std::vector<MucThongKe> dsMuc = {
+        { MauSacNhanSu::XANH_NGOC, "Tong so nhan vien toan cong ty", MauSacNhanSu::TRANG + MauSacNhanSu::DAM, std::to_string(dsNhanVien_.size()) + " nguoi" },
+        { MauSacNhanSu::XANH_LA,   "Nhan vien Van phong",            MauSacNhanSu::TRANG,                      std::to_string(soVanPhong) + " nguoi" },
+        { MauSacNhanSu::VANG,      "Nhan vien San xuat",             MauSacNhanSu::TRANG,                      std::to_string(soSanXuat) + " nguoi" },
+        { MauSacNhanSu::TIM,       "Quan ly",                        MauSacNhanSu::TRANG,                      std::to_string(soQuanLy) + " nguoi" }
+    };
 
+    // 2. Tu dong tim do dai cua nhan dai nhat (Dynamic Width)
+    int doRongCotNhan = 0;
+    for (const auto& item : dsMuc) {
+        if (static_cast<int>(item.nhan.length()) > doRongCotNhan) {
+            doRongCotNhan = static_cast<int>(item.nhan.length());
+        }
+    }
+
+    // Nap hop
     std::cout << "\n" << pad << MAU_VIEN
         << "++" << std::string(KHOANG_TRONG, '=') << "++\n"
         << MauSacNhanSu::RESET;
 
-        std::string tieuDe = "THONG KE QUY LUONG VA NHAN SU";
-        int leTrai = (KHOANG_TRONG - (int)tieuDe.length()) / 2;
-        int lePhai = KHOANG_TRONG - (int)tieuDe.length() - leTrai;
+    std::string tieuDe = "THONG KE QUY LUONG VA NHAN SU";
+    int leTrai = (KHOANG_TRONG - (int)tieuDe.length()) / 2;
+    int lePhai = KHOANG_TRONG - (int)tieuDe.length() - leTrai;
 
-        std::cout << pad
+    std::cout << pad
         << MAU_VIEN << "||" << MauSacNhanSu::RESET
         << std::string(leTrai, ' ')
         << MauSacNhanSu::XANH_DUONG << MauSacNhanSu::DAM << tieuDe << MauSacNhanSu::RESET
         << std::string(lePhai, ' ')
         << MAU_VIEN << "||" << MauSacNhanSu::RESET << "\n";
 
-        std::cout << pad << MAU_VIEN
+    std::cout << pad << MAU_VIEN
         << "||" << std::string(KHOANG_TRONG, '-') << "||\n"
         << MauSacNhanSu::RESET;
 
-        inDongThongKe(MauSacNhanSu::XANH_NGOC, "Tong so nhan vien toan cty", MauSacNhanSu::TRANG + MauSacNhanSu::DAM, std::to_string(dsNhanVien_.size()) + " nguoi");
-        inDongThongKe(MauSacNhanSu::XANH_LA, "Nhan vien Van phong", MauSacNhanSu::TRANG, std::to_string(soVanPhong) + " nguoi");
-        inDongThongKe(MauSacNhanSu::VANG, "Nhan vien San xuat", MauSacNhanSu::TRANG, std::to_string(soSanXuat) + " nguoi");
-        inDongThongKe(MauSacNhanSu::TIM, "Quan ly cap cao", MauSacNhanSu::TRANG, std::to_string(soQuanLy) + " nguoi");
+    // 3. In cac muc: Tu dong can le theo doRongCotNhan vua tim duoc
+    for (const auto& item : dsMuc) {
+        int doDaiDuLieu = static_cast<int>(item.giaTri.length());
+        // Cong thuc dong vien phai tu dong: 62 - (2 + doRongCotNhan + 2) - doDaiDuLieu
+        int khoangDemPhai = KHOANG_TRONG - 4 - doRongCotNhan - doDaiDuLieu;
+        if (khoangDemPhai < 0) khoangDemPhai = 0;
 
-        std::cout << pad << MAU_VIEN
+        std::cout << pad
+            << MAU_VIEN << "||  " << MauSacNhanSu::RESET
+            << item.mauNhan << std::left << std::setw(doRongCotNhan) << item.nhan
+            << ": " << MauSacNhanSu::RESET
+            << item.mauGiaTri << item.giaTri << MauSacNhanSu::RESET
+            << std::string(khoangDemPhai, ' ')
+            << MAU_VIEN << "||\n" << MauSacNhanSu::RESET;
+    }
+
+    std::cout << pad << MAU_VIEN
         << "||" << std::string(KHOANG_TRONG, '-') << "||\n"
-        << MauSacNhanSu::RESET; 
+        << MauSacNhanSu::RESET;
 
-        // Tong quy luong[cite: 22]
-        inDongThongKe(MauSacNhanSu::XANH_LA + MauSacNhanSu::DAM, "TONG QUY LUONG PHAI CHI",
-            MauSacNhanSu::XANH_LA + MauSacNhanSu::DAM, dinhDangSoTien(tongLuong) + " VND"); 
+    // Dong Tong quy luong cung can theo doRongCotNhan
+    std::string nhanTong = "TONG QUY LUONG PHAI CHI";
+    std::string valTong = dinhDangSoTien(tongLuong) + " VND";
+    int khoangDemPhaiTong = KHOANG_TRONG - 4 - doRongCotNhan - static_cast<int>(valTong.length());
+    if (khoangDemPhaiTong < 0) khoangDemPhaiTong = 0;
 
-        std::cout << pad << MAU_VIEN
+    std::cout << pad
+        << MAU_VIEN << "||  " << MauSacNhanSu::RESET
+        << MauSacNhanSu::XANH_LA << MauSacNhanSu::DAM << std::left << std::setw(doRongCotNhan) << nhanTong
+        << ": " << MauSacNhanSu::RESET
+        << MauSacNhanSu::XANH_LA << MauSacNhanSu::DAM << valTong << MauSacNhanSu::RESET
+        << std::string(khoangDemPhaiTong, ' ')
+        << MAU_VIEN << "||\n" << MauSacNhanSu::RESET;
+
+    std::cout << pad << MAU_VIEN
         << "++" << std::string(KHOANG_TRONG, '=') << "++\n"
-        << MauSacNhanSu::RESET << "\n"; 
+        << MauSacNhanSu::RESET << "\n";
 
-        return tongLuong; 
+    return tongLuong;
 }
 
 void QuanLyNhanSu::hienThiDanhSach() {
@@ -738,9 +769,9 @@ void QuanLyNhanSu::sapXepDanhSach() {
 // ==========================================
 
 void QuanLyNhanSu::thoatChuongTrinh() {
-    giaiPhongBoNho(); // Giải phóng toàn bộ vector con trỏ an toàn
+    giaiPhongBoNho(); // Giai phong toan bo bo nho cap phat dong
 
-    // Dọn sạch màn hình console
+    // Don sach man hinh console
 #ifdef _WIN32
     std::system("cls");
 #else
@@ -748,8 +779,8 @@ void QuanLyNhanSu::thoatChuongTrinh() {
 #endif
 
     const int CHIEU_RONG_KHUNG = 66;
-    const int LE_CAN_GIUA = (DO_RONG_MAN_HINH - CHIEU_RONG_KHUNG) / 2; // 38 khoảng trắng
-    const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;                     // 62 ký tự lòng khung
+    const int LE_CAN_GIUA = (DO_RONG_MAN_HINH - CHIEU_RONG_KHUNG) / 2; // 38 khoang trang
+    const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;                     // Chinh xac 62 ky tu
     const std::string pad(LE_CAN_GIUA, ' ');
     const std::string MAU_VIEN = MauSacNhanSu::XANH_CYAN;
 
@@ -768,46 +799,46 @@ void QuanLyNhanSu::thoatChuongTrinh() {
 
     std::cout << "\n\n";
 
-    // Nắp hộp
+    // 1. Nap hop (62 dau '=')
     std::cout << pad << MAU_VIEN
         << "++" << std::string(KHOANG_TRONG, '=') << "++\n"
         << MauSacNhanSu::RESET;
 
-    // Tiêu đề thiệp
+    // 2. Tieu de thiep
     inDongCanGiuaKhung(MauSacNhanSu::XANH_DUONG + MauSacNhanSu::DAM, "TAM BIET & HEN GAP LAI");
 
-    // Đường gạch ngang
+    // 3. Duong phan cach tren (chinh xac 62 dau '-')
     std::cout << pad << MAU_VIEN
         << "||" << std::string(KHOANG_TRONG, '-') << "||\n"
         << MauSacNhanSu::RESET;
 
-    // Khoảng trống đệm trên
+    // Khoang trong dem tren
     inDongCanGiuaKhung(MauSacNhanSu::RESET, "");
 
-    // Nội dung chính
+    // 4. Noi dung loi cam on
     inDongCanGiuaKhung(MauSacNhanSu::VANG + MauSacNhanSu::DAM, "Cam on ban da su dung HE THONG QUAN LY NHAN SU C++!");
     inDongCanGiuaKhung(MauSacNhanSu::CAM, "Chuc ban mot ngay hoc tap va lam viec that tot!");
 
-    // Khoảng trống đệm dưới
+    // Khoang trong dem duoi
     inDongCanGiuaKhung(MauSacNhanSu::RESET, "");
 
-    // Đường gạch ngang
+    // 5. Duong phan cach duoi (chinh xac 62 dau '-')
     std::cout << pad << MAU_VIEN
         << "||" << std::string(KHOANG_TRONG, '-') << "||\n"
         << MauSacNhanSu::RESET;
 
-    // Dòng trạng thái kỹ thuật căn giữa
+    // 6. Trang thai ky thuat (Do dai 48 ky tu -> leTrai = lePhai = 7 khoang trang)
     inDongCanGiuaKhung(MauSacNhanSu::XANH_LA, "Trang thai: Da giai phong tai nguyen & luu an toan.");
 
-    // Dòng thông tin phiên bản & Nhóm tác giả BDPT
-    inDongCanGiuaKhung(MauSacNhanSu::TRANG + MauSacNhanSu::DAM, "Phien ban: 1.0.0 | Phat trien boi Nhom BDPT");
+    // 7. Thong tin phien ban & nhom BDPT (Do dai 42 ky tu -> leTrai = lePhai = 10 khoang trang)
+    inDongCanGiuaKhung(MauSacNhanSu::TRANG + MauSacNhanSu::DAM, "Phien ban: 1.0.0 | Phat trien boi Nhom BDPT ");
 
-    // Đáy hộp
+    // 8. Day hop (62 dau '=')
     std::cout << pad << MAU_VIEN
         << "++" << std::string(KHOANG_TRONG, '=') << "++\n"
         << MauSacNhanSu::RESET << "\n\n";
 
-    std::exit(EXIT_SUCCESS); // Kết thúc chương trình
+    std::exit(EXIT_SUCCESS);
 }
 
 // ==========================================
