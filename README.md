@@ -4,22 +4,30 @@
 CÂY THƯ MỤC TRONG GITHUB:
 ```text
 OOP_QuanLyNhanSu_BDPT/
-|                   
-├── include/                   # Chứa các file header (.h)
-│   ├── NhanVien.h
-│   ├── NhanVienSanXuat.h
-│   ├── NhanVienVanPhong.h
-│   └── QuanLy.h
 │
-├── src/                       # Chứa mã nguồn cài đặt (.cpp)
-│   ├── NhanVien.cpp
-│   ├── NhanVienSanXuat.cpp
-│   ├── NhanVienVanPhong.cpp
-│   ├── QuanLy.cpp
-│   └── main.cpp
+├── Data
+│   └── NhanVien.txt               # File dữ liệu danh sách nhân sự mẫu (tự nạp khi khởi động)
 │
-├── .gitignore
-└── README.md
+├── include                        # File Headers (.h)
+│   ├── NhanVien.h                 # Lớp cơ sở trừu tượng NhanVien
+│   ├── NhanVienSanXuat.h          # Lớp kế thừa: Nhân viên Sản xuất
+│   ├── NhanVienVanPhong.h         # Lớp kế thừa: Nhân viên Văn phòng
+│   ├── QuanLy.h                   # Lớp kế thừa: Quản lý
+│   └── QuanLyNhanSu.h             # Lớp điều phối hệ thống & giao diện menu
+│
+├── src                            # File Sources (.cpp)
+│   ├── main.cpp                   # Điểm khởi chạy chương trình & vòng lặp Menu chính
+│   ├── NhanVien.cpp               # Cài đặt phương thức chung & form nhập cơ bản
+│   ├── NhanVienSanXuat.cpp        # Cài đặt tính lương, KPI & form nhập nhân viên sản xuất
+│   ├── NhanVienVanPhong.cpp       # Cài đặt tính lương, KPI & form nhập nhân viên văn phòng
+│   ├── QuanLy.cpp                 # Cài đặt tính lương & form nhập quản lý
+│   └── QuanLyNhanSu.cpp           # Cài đặt 5 chức năng chính & tiện ích bảng/hộp thoại ANSI
+│
+├── .gitignore                     # Bỏ qua các file rác build Visual Studio (.vs, x64, Debug,...)
+├── QuanLyNhanSu.sln               # File Solution của Visual Studio
+├── QuanLyNhanSu.vcxproj           # File cấu hình Project C++
+├── QuanLyNhanSu.vcxproj.filters   # File lưu cấu trúc nhóm ảo (Header/Source Files)
+└── README.md                      # Tài liệu giới thiệu & hướng dẫn cài đặt đồ án
 ```
 
 HƯỚNG DẪN QUY TRÌNH LÀM VIỆC GITHUB:
