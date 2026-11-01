@@ -831,7 +831,7 @@ void QuanLyNhanSu::thoatChuongTrinh() {
     inDongCanGiuaKhung(MauSacNhanSu::XANH_LA, "Trang thai: Da giai phong tai nguyen & luu an toan.");
 
     // 7. Thong tin phien ban & nhom BDPT (Do dai 42 ky tu -> leTrai = lePhai = 10 khoang trang)
-    inDongCanGiuaKhung(MauSacNhanSu::TRANG + MauSacNhanSu::DAM, "Phien ban: 1.0.0 | Phat trien boi Nhom BDPT ");
+    inDongCanGiuaKhung(MauSacNhanSu::TRANG + MauSacNhanSu::DAM, "Phien ban: 1.0.0 | Phat trien boi Nhom BDPT");
 
     // 8. Day hop (62 dau '=')
     std::cout << pad << MAU_VIEN
