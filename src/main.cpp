@@ -59,7 +59,7 @@ void hienThiMenu() {
         << MauSac::RESET;
 
     inDongLuaChon(MauSac::XANH_LA, "[1] Them nhan vien moi");
-    inDongLuaChon(MauSac::DO, "[2] Xoa nhan vien theo Ma");
+    inDongLuaChon(MauSac::DO, "[2] Xoa nhan vien theo ma");
     inDongLuaChon(MauSac::VANG, "[3] Tim kiem nhan vien");
     inDongLuaChon(MauSac::TIM, "[4] Hien thi thong tin");
     inDongLuaChon(MauSac::TRANG, "[5] Thoat chuong trinh");
