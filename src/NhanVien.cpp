@@ -7,32 +7,52 @@
 
 namespace MauSacNhanVien {
     const std::string RESET = "\033[0m";
-    const std::string XANH_CYAN = "\033[36m";
-    const std::string XANH_LA = "\033[32m";
     const std::string XANH_LA_SANG = "\033[38;5;120m";
-    const std::string XANH_DUONG = "\033[34m";
-    const std::string XANH_NGOC = "\033[38;5;44m";
     const std::string CAM = "\033[38;5;208m";
     const std::string VANG = "\033[33m";
-    const std::string TIM = "\033[35m";
     const std::string TIM_NHAT = "\033[38;5;141m";
-    const std::string HONG = "\033[38;5;206m";
+    const std::string XANH_NGOC = "\033[38;5;44m";
     const std::string TRANG = "\033[37m";
     const std::string DO = "\033[31m";
     const std::string DAM = "\033[1m";
 }
 
 namespace {
-    bool laChuoiKhoangTrang(const std::string& s) {
-        for (char c : s) {
-            if (!std::isspace(static_cast<unsigned char>(c))) return false;
+    // 1. Chuan hoa khoang trang: Xoa space dau/cuoi va gom nhieu space giua thanh 1 space
+    std::string chuanHoaKhoangTrang(const std::string& s) {
+        std::string ketQua = "";
+        std::stringstream ss(s);
+        std::string tu;
+        while (ss >> tu) {
+            if (!ketQua.empty()) ketQua += " ";
+            ketQua += tu;
         }
-        return true;
+        return ketQua;
+    }
+
+    // 2. Chuan hoa viet hoa chu cai dau moi tu (Title Case) cho Ho va Ten
+    std::string vietHoaDauTu(const std::string& s) {
+        std::string chuan = chuanHoaKhoangTrang(s);
+        bool vietHoa = true;
+        for (char& c : chuan) {
+            if (std::isspace(static_cast<unsigned char>(c))) {
+                vietHoa = true;
+            }
+            else if (vietHoa) {
+                c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+                vietHoa = false;
+            }
+            else {
+                c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+            }
+        }
+        return chuan;
     }
 
     bool kiemTraTenHopLe(const std::string& s) {
-        if (s.empty() || laChuoiKhoangTrang(s)) return false;
-        for (char c : s) {
+        std::string daChuanHoa = chuanHoaKhoangTrang(s);
+        if (daChuanHoa.empty()) return false;
+        for (char c : daChuanHoa) {
             if (std::isdigit(static_cast<unsigned char>(c))) return false;
         }
         return true;
@@ -77,7 +97,7 @@ std::string NhanVien::dinhDangTien(double soTien) const {
     std::string s = oss.str();
     int index = (int)s.length() - 3;
     while (index > 0) {
-        s.insert(index, ".");
+        s.insert(index, ",");
         index -= 3;
     }
     return s;
@@ -85,8 +105,8 @@ std::string NhanVien::dinhDangTien(double soTien) const {
 
 void NhanVien::nhap(std::istream& in) {
     const int CHIEU_RONG_KHUNG = 66;
-    const int LE_CAN_GIUA = (142 - CHIEU_RONG_KHUNG) / 2; // 38 khoang trang
-    const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;        // 62 ky tu long khung
+    const int LE_CAN_GIUA = (142 - CHIEU_RONG_KHUNG) / 2; // 38 khoảng trắng
+    const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;        // 62 ký tự lòng khung
     const std::string pad(LE_CAN_GIUA, ' ');
 
     std::cout << "\n" << pad << MauSacNhanVien::CAM
@@ -110,7 +130,9 @@ void NhanVien::nhap(std::istream& in) {
         << MauSacNhanVien::RESET;
 
     auto inVaDocChuoi = [&](const std::string& mau, const std::string& nhan, std::string& giaTri,
-        bool (*kiemTraHopLe)(const std::string&), const std::string& thongBaoLoi) {
+        bool (*kiemTraHopLe)(const std::string&), const std::string& thongBaoLoi, bool laHoTen, bool laDiaChi) {
+            bool coLoi = false;
+
             while (true) {
                 std::cout << pad
                     << MauSacNhanVien::CAM << "||  " << MauSacNhanVien::RESET
@@ -119,40 +141,59 @@ void NhanVien::nhap(std::istream& in) {
 
                 std::getline(in >> std::ws, giaTri);
 
-                // Tinh khoang dem phai cho dong nhap lieu: 62 - (2 + 26 + 2) - doDai = 32 - doDai
-                int doDaiDuLieu = static_cast<int>(giaTri.length());
-                int khoangDemPhai = KHOANG_TRONG - 30 - doDaiDuLieu;
-                if (khoangDemPhai < 0) khoangDemPhai = 0;
+                // Chuẩn hóa chuỗi tự động: thu gọn khoảng cách thừa và viết hoa chữ cái đầu cho cả Họ tên & Địa chỉ
+                if (laHoTen || laDiaChi) {
+                    giaTri = vietHoaDauTu(giaTri);
+                }
 
-                std::cout << "\033[1A\r" << pad
-                    << MauSacNhanVien::CAM << "||  " << MauSacNhanVien::RESET
-                    << mau << std::left << std::setw(26) << nhan
-                    << ": " << MauSacNhanVien::RESET
-                    << MauSacNhanVien::TRANG << giaTri << MauSacNhanVien::RESET
-                    << std::string(khoangDemPhai, ' ')
-                    << MauSacNhanVien::CAM << "||\n" << MauSacNhanVien::RESET;
-
-                // Kiem tra hop le
+                // Nếu dữ liệu hợp lệ
                 if (kiemTraHopLe == nullptr || kiemTraHopLe(giaTri)) {
+                    if (coLoi) {
+                        // Nếu trước đó có dòng lỗi: lùi 2 dòng (dòng vừa gõ + dòng lỗi đỏ) và xóa sạch
+                        std::cout << "\033[1A\033[2K\r";
+                        std::cout << "\033[1A\033[2K\r";
+                    }
+                    else {
+                        // Nếu gõ đúng ngay từ đầu: chỉ cần lùi lên dòng vừa gõ
+                        std::cout << "\033[1A\033[2K\r";
+                    }
+
+                    // In đè lại dòng chuẩn xác có đóng viền || khép kín
+                    int doDaiDuLieu = static_cast<int>(giaTri.length());
+                    int khoangDemPhai = 32 - doDaiDuLieu;
+                    if (khoangDemPhai < 0) khoangDemPhai = 0;
+
+                    std::cout << pad
+                        << MauSacNhanVien::CAM << "||  " << MauSacNhanVien::RESET
+                        << mau << std::left << std::setw(26) << nhan
+                        << ": " << MauSacNhanVien::RESET
+                        << MauSacNhanVien::TRANG << giaTri << MauSacNhanVien::RESET
+                        << std::string(khoangDemPhai, ' ')
+                        << MauSacNhanVien::CAM << "||\n" << MauSacNhanVien::RESET;
                     break;
                 }
 
-                // Tinh khoang dem phai cho dong thong bao loi: 62 - 2 (le trai) - doDaiLoi
-                int lePhaiLoi = KHOANG_TRONG - 2 - static_cast<int>(thongBaoLoi.length());
-                if (lePhaiLoi < 0) lePhaiLoi = 0;
+                // Nếu nhập sai:
+                if (coLoi) {
+                    std::cout << "\033[1A\033[2K\r";
+                    std::cout << "\033[1A\033[2K\r";
+                }
+                else {
+                    std::cout << "\033[1A\033[2K\r";
+                }
 
-                std::cout << pad << MauSacNhanVien::CAM << "||  " << MauSacNhanVien::RESET
-                    << MauSacNhanVien::DO << thongBaoLoi << MauSacNhanVien::RESET
-                    << std::string(lePhaiLoi, ' ')
-                    << MauSacNhanVien::CAM << "||\n" << MauSacNhanVien::RESET;
+                std::cout << pad << "    " << MauSacNhanVien::DO << ">> " << thongBaoLoi << MauSacNhanVien::RESET << "\n";
+                coLoi = true;
             }
         };
 
-    inVaDocChuoi(MauSacNhanVien::XANH_LA_SANG, "Ma nhan vien", maNhanVien_, nullptr, "");
-    inVaDocChuoi(MauSacNhanVien::VANG, "Ho va ten", hoTen_, kiemTraTenHopLe, "Ten khong duoc chua so/de trong!");
-    inVaDocChuoi(MauSacNhanVien::TIM_NHAT, "Ngay sinh (dd/mm/yyyy)", ngaySinh_, kiemTraNgaySinhHopLe, "Dinh dang dd/mm/yyyy (18-65 tuoi)!");
-    inVaDocChuoi(MauSacNhanVien::XANH_NGOC, "Dia chi", diaChi_, [](const std::string& s) { return !s.empty() && !laChuoiKhoangTrang(s); }, "Dia chi khong duoc de trong!");
+    inVaDocChuoi(MauSacNhanVien::XANH_LA_SANG, "Ma nhan vien", maNhanVien_, nullptr, "", false, false);
+    inVaDocChuoi(MauSacNhanVien::VANG, "Ho va ten", hoTen_, kiemTraTenHopLe, "Ten khong duoc chua so/de trong!", true, false);
+    inVaDocChuoi(MauSacNhanVien::TIM_NHAT, "Ngay sinh (dd/mm/yyyy)", ngaySinh_, kiemTraNgaySinhHopLe, "Dinh dang dd/mm/yyyy (18-65 tuoi)!", false, false);
+    // Nhập địa chỉ: tự động nhận diện nhiều khoảng trắng và viết hoa chữ cái đầu mỗi từ
+    inVaDocChuoi(MauSacNhanVien::XANH_NGOC, "Dia chi", diaChi_, [](const std::string& s) { return !chuanHoaKhoangTrang(s).empty(); }, "Dia chi khong duoc de trong!", false, true);
 }
+
 void NhanVien::xuat(std::ostream& out) const {
     out << std::left
         << std::setw(10) << maNhanVien_

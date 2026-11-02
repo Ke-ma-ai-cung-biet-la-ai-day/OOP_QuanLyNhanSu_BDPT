@@ -46,6 +46,7 @@ void NhanVienSanXuat::nhap(std::istream& in) {
     const std::string pad(LE_CAN_GIUA, ' ');
 
     auto inVaDocSo = [&](const std::string& mau, const std::string& nhan, int minVal, int maxVal, int& giaTri) {
+        bool coLoi = false;
         while (true) {
             std::cout << pad
                 << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
@@ -55,38 +56,53 @@ void NhanVienSanXuat::nhap(std::istream& in) {
             std::string chuoiNhap;
             std::getline(in >> std::ws, chuoiNhap);
 
-            int doDaiDuLieu = static_cast<int>(chuoiNhap.length());
-            int khoangDemPhai = KHOANG_TRONG - 4 - 26 - doDaiDuLieu;
-            if (khoangDemPhai < 0) khoangDemPhai = 0;
-
-            std::cout << "\033[1A\r" << pad
-                << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
-                << mau << std::left << std::setw(26) << nhan
-                << ": " << MauSacSanXuat::RESET
-                << MauSacSanXuat::TRANG << chuoiNhap << MauSacSanXuat::RESET
-                << std::string(khoangDemPhai, ' ')
-                << MauSacSanXuat::CAM << "||\n" << MauSacSanXuat::RESET;
-
+            bool hopLe = false;
             try {
                 size_t pos = 0;
                 int val = std::stoi(chuoiNhap, &pos);
                 if (pos == chuoiNhap.length() && val >= minVal && val <= maxVal) {
                     giaTri = val;
-                    break;
+                    hopLe = true;
                 }
             }
             catch (...) {}
 
-            std::string msg = "Gia tri tu " + std::to_string(minVal) + " den " + std::to_string(maxVal) + "!";
-            int lePhaiLoi = KHOANG_TRONG - 2 - static_cast<int>(msg.length());
-            if (lePhaiLoi < 0) lePhaiLoi = 0;
+            if (hopLe) {
+                if (coLoi) {
+                    std::cout << "\033[1A\033[2K\r"; // Xóa dòng vừa gõ
+                    std::cout << "\033[1A\033[2K\r"; // Xóa dòng lỗi
+                }
+                else {
+                    std::cout << "\033[1A\033[2K\r"; // Xóa dòng vừa gõ
+                }
 
-            std::cout << pad << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
-                << MauSacSanXuat::DO << msg << MauSacSanXuat::RESET
-                << std::string(lePhaiLoi, ' ')
-                << MauSacSanXuat::CAM << "||\n" << MauSacSanXuat::RESET;
+                int doDaiDuLieu = static_cast<int>(chuoiNhap.length());
+                int khoangDemPhai = 32 - doDaiDuLieu;
+                if (khoangDemPhai < 0) khoangDemPhai = 0;
+
+                std::cout << pad
+                    << MauSacSanXuat::CAM << "||  " << MauSacSanXuat::RESET
+                    << mau << std::left << std::setw(26) << nhan
+                    << ": " << MauSacSanXuat::RESET
+                    << MauSacSanXuat::TRANG << chuoiNhap << MauSacSanXuat::RESET
+                    << std::string(khoangDemPhai, ' ')
+                    << MauSacSanXuat::CAM << "||\n" << MauSacSanXuat::RESET;
+                break;
+            }
+
+            if (coLoi) {
+                std::cout << "\033[1A\033[2K\r";
+                std::cout << "\033[1A\033[2K\r";
+            }
+            else {
+                std::cout << "\033[1A\033[2K\r";
+            }
+
+            std::string msg = "Gia tri tu " + std::to_string(minVal) + " den " + std::to_string(maxVal) + "!";
+            std::cout << pad << "    " << MauSacSanXuat::DO << ">> " << msg << MauSacSanXuat::RESET << "\n";
+            coLoi = true;
         }
-        };
+    };
 
     inVaDocSo(MauSacSanXuat::CAM, "So san pham lam duoc", 0, 500, soSanPham_);
     inVaDocSo(MauSacSanXuat::HONG, "Don gia san pham (VND)", 40000, 80000, donGiaSanPham_);

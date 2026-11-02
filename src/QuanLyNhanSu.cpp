@@ -406,6 +406,7 @@ void QuanLyNhanSu::timKiemMenu() {
         tenBoPhan = "Nhan vien Van phong";
         thongBaoLoai = "KET QUA: NHAN VIEN VAN PHONG (" + nv->getMaNhanVien() + ")";
         danhSachThuocTinh.push_back({ MauSacNhanSu::HONG, "So ngay lam viec", std::to_string(vp->getSoNgayLamViec()) + " ngay" });
+        danhSachThuocTinh.push_back({ MauSacNhanSu::VANG_SANG,  "Don gia ngay", dinhDangSoTien(vp->getDonGiaNgay()) + " VND" });
         danhSachThuocTinh.push_back({ MauSacNhanSu::TIM, "So gio tang ca (OT)", std::to_string(vp->getSoGioTangCa()) + " gio" });
         danhSachThuocTinh.push_back({ MauSacNhanSu::XANH_CYAN, "He so KPI", dinhDangThapPhan(vp->tinhHeSoKPI(), 2) });
     }
@@ -413,6 +414,7 @@ void QuanLyNhanSu::timKiemMenu() {
         tenBoPhan = "Nhan vien San xuat";
         thongBaoLoai = "KET QUA: NHAN VIEN SAN XUAT (" + nv->getMaNhanVien() + ")";
         danhSachThuocTinh.push_back({ MauSacNhanSu::HONG, "So san pham lam duoc", std::to_string(sx->getSoSanPham()) + " SP" });
+        danhSachThuocTinh.push_back({ MauSacNhanSu::VANG_SANG,  "Don gia san pham", dinhDangSoTien(sx->getDonGiaSanPham()) + " VND" });
         danhSachThuocTinh.push_back({ MauSacNhanSu::TIM, "Dinh muc quy dinh", std::to_string(DINH_MUC_SAN_PHAM) + " SP" });
         danhSachThuocTinh.push_back({ MauSacNhanSu::XANH_CYAN, "He so KPI", dinhDangThapPhan(sx->tinhHeSoKPI(), 2) });
     }
@@ -846,16 +848,24 @@ void QuanLyNhanSu::thoatChuongTrinh() {
 // ==========================================
 
 void QuanLyNhanSu::inHangBang(const std::vector<std::string>& cacCot) {
-    std::cout << std::left; 
-        for (int i = 0; i < SO_COT; ++i) {
-            std::cout << MauSacNhanSu::XANH_CYAN
-                << "| "
-                << MauSacNhanSu::RESET
-                << std::setw(DO_RONG_COT[i]) << cacCot[i]; 
+    for (int i = 0; i < SO_COT; ++i) {
+        if (i == SO_COT - 1) {
+            int doDai = static_cast<int>(cacCot[i].length());
+            if (doDai >= DO_RONG_COT[i]) {
+                std::cout << MauSacNhanSu::XANH_CYAN << "| " << MauSacNhanSu::RESET
+                    << std::left << std::setw(DO_RONG_COT[i]) << cacCot[i];
+            }
+            else {
+                std::cout << MauSacNhanSu::XANH_CYAN << "| " << MauSacNhanSu::RESET
+                    << std::right << std::setw(DO_RONG_COT[i] - 1) << cacCot[i] << " ";
+            }
         }
-    std::cout << MauSacNhanSu::XANH_CYAN
-        << "|"
-        << MauSacNhanSu::RESET << "\n";
+        else {
+            std::cout << MauSacNhanSu::XANH_CYAN << "| " << MauSacNhanSu::RESET
+                << std::left << std::setw(DO_RONG_COT[i]) << cacCot[i];
+        }
+    }
+    std::cout << MauSacNhanSu::XANH_CYAN << "|" << MauSacNhanSu::RESET << "\n";
 }
 
 int QuanLyNhanSu::layPhanSo(const std::string& maNhanVien) {
@@ -1066,15 +1076,15 @@ void QuanLyNhanSu::nhapNhanVienMoi(QuanLyNhanSu& quanLy, int loai) {
     std::string mauLoai;
 
     if (loai == LOAI_VAN_PHONG) {
-        tienToYeuCau = TIEN_TO_VP;
+        tienToYeuCau = TIEN_TO_VP; // NVVP
         mauLoai = MauSacNhanSu::XANH_LA;
     }
     else if (loai == LOAI_SAN_XUAT) {
-        tienToYeuCau = TIEN_TO_SX;
+        tienToYeuCau = TIEN_TO_SX; // NVSX
         mauLoai = MauSacNhanSu::VANG;
     }
     else {
-        tienToYeuCau = TIEN_TO_QL;
+        tienToYeuCau = TIEN_TO_QL; // NVQL
         mauLoai = MauSacNhanSu::TIM;
     }
 
@@ -1106,13 +1116,32 @@ void QuanLyNhanSu::nhapNhanVienMoi(QuanLyNhanSu& quanLy, int loai) {
         }
 
         std::string maNhanVien = nhanVien->getMaNhanVien();
+        bool coLoiMaTruocDo = false;
+
+        // Vòng lặp kiểm tra và yêu cầu nhập lại mã nếu sai định dạng hoặc trùng mã
         while (true) {
-            bool hopLeDinhDang = kiemTraDinhDangMa(maNhanVien);
-            bool dungTienToLoai = (maNhanVien.size() == DO_DAI_MA && maNhanVien.substr(0, 4) == tienToYeuCau);
+            bool hopLeDinhDang = kiemTraDinhDangMa(maNhanVien); // 8 ký tự, 4 ký tự sau là số
+            bool dungTienToLoai = (maNhanVien.size() == DO_DAI_MA && maNhanVien.substr(0, 4) == tienToYeuCau); // Đúng NVVP/NVSX/NVQL
             bool biTrungMa = quanLy.kiemTraTrungMa(maNhanVien);
 
+            // Nếu mã nhập vào hoàn toàn chính xác
             if (hopLeDinhDang && dungTienToLoai && !biTrungMa) {
+                if (coLoiMaTruocDo) {
+                    // Xóa cụm dòng lỗi bên dưới: dòng vừa gõ, dòng câu nhắc, dòng trống, dòng báo lỗi đỏ
+                    std::cout << "\033[1A\033[2K\r"; // Dòng vừa gõ
+                    std::cout << "\033[1A\033[2K\r"; // Dòng trống
+                    std::cout << "\033[1A\033[2K\r"; // Dòng thông báo lỗi đỏ
+                    std::cout << "\033[1A\033[2K\r"; // Dòng trống trên lỗi
+                }
                 break;
+            }
+
+            // Nếu đã từng có lỗi trước đó, xóa cụm dòng thông báo và dòng nhập cũ trước khi in cái mới
+            if (coLoiMaTruocDo) {
+                std::cout << "\033[1A\033[2K\r"; // Dòng vừa nhập
+                std::cout << "\033[1A\033[2K\r"; // Dòng trống đệm
+                std::cout << "\033[1A\033[2K\r"; // Dòng báo lỗi đỏ cũ
+                std::cout << "\033[1A\033[2K\r"; // Dòng trống trên lỗi
             }
 
             std::cout << "\n";
@@ -1121,20 +1150,25 @@ void QuanLyNhanSu::nhapNhanVienMoi(QuanLyNhanSu& quanLy, int loai) {
                 inThongBaoCanGiua(MauSacNhanSu::DO + MauSacNhanSu::DAM, loiDinhDang);
             }
             else {
-                std::string loiTrung = "LOI: Ma nhan vien '" + maNhanVien + "' da ton tai!";
+                std::string loiTrung = "LOI: Ma nhan vien '" + maNhanVien + "' da ton tai trong he thong!";
                 inThongBaoCanGiua(MauSacNhanSu::DO + MauSacNhanSu::DAM, loiTrung);
             }
 
             std::string cauNhacLai = "Nhap lai Ma Nhan Vien: ";
             int leNhapLai = (DO_RONG_MAN_HINH - static_cast<int>(cauNhacLai.length()) - 10) / 2;
-            std::cout << "\n" << std::string(leNhapLai, ' ') << MauSacNhanSu::VANG << cauNhacLai << MauSacNhanSu::RESET;
+            std::cout << "\n" << std::string(leNhapLai, ' ')
+                << MauSacNhanSu::VANG << MauSacNhanSu::DAM << cauNhacLai
+                << MauSacNhanSu::RESET;
+
+            coLoiMaTruocDo = true;
+
             if (!std::getline(std::cin >> std::ws, maNhanVien)) {
                 delete nhanVien;
                 return;
             }
         }
-        nhanVien->setMaNhanVien(maNhanVien);
 
+        nhanVien->setMaNhanVien(maNhanVien);
         quanLy.themNhanVien(nhanVien);
 
         std::cout << "\n";

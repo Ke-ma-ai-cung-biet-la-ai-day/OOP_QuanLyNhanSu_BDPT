@@ -51,6 +51,7 @@ void NhanVienVanPhong::nhap(std::istream& in) {
     const std::string pad(LE_CAN_GIUA, ' ');
 
     auto inVaDocSo = [&](const std::string& mau, const std::string& nhan, int minVal, int maxVal, int& giaTri) {
+        bool coLoi = false;
         while (true) {
             std::cout << pad
                 << MauSacVanPhong::CAM << "||  " << MauSacVanPhong::RESET
@@ -60,47 +61,58 @@ void NhanVienVanPhong::nhap(std::istream& in) {
             std::string chuoiNhap;
             std::getline(in >> std::ws, chuoiNhap);
 
-            // Dong vien phai cho dong nguoi dung vua go
-            int doDaiDuLieu = static_cast<int>(chuoiNhap.length());
-            int khoangDemPhai = KHOANG_TRONG - 4 - 26 - doDaiDuLieu;
-            if (khoangDemPhai < 0) khoangDemPhai = 0;
-
-            std::cout << "\033[1A\r" << pad
-                << MauSacVanPhong::CAM << "||  " << MauSacVanPhong::RESET
-                << mau << std::left << std::setw(26) << nhan
-                << ": " << MauSacVanPhong::RESET
-                << MauSacVanPhong::TRANG << chuoiNhap << MauSacVanPhong::RESET
-                << std::string(khoangDemPhai, ' ')
-                << MauSacVanPhong::CAM << "||\n" << MauSacVanPhong::RESET;
-
-            // Kiem tra chuoi co phai la so hop le khong
+            bool hopLe = false;
             try {
                 size_t pos = 0;
                 int val = std::stoi(chuoiNhap, &pos);
                 if (pos == chuoiNhap.length() && val >= minVal && val <= maxVal) {
                     giaTri = val;
-                    break;
+                    hopLe = true;
                 }
             }
             catch (...) {}
 
-            // Neu nhap sai, in dong bao loi co dong vien khép kín
-            std::string msg = "Gia tri tu " + std::to_string(minVal) + " den " + std::to_string(maxVal) + "!";
-            int lePhaiLoi = KHOANG_TRONG - 2 - static_cast<int>(msg.length());
-            if (lePhaiLoi < 0) lePhaiLoi = 0;
+            if (hopLe) {
+                if (coLoi) {
+                    std::cout << "\033[1A\033[2K\r"; // Xóa dòng vừa gõ
+                    std::cout << "\033[1A\033[2K\r"; // Xóa dòng lỗi
+                }
+                else {
+                    std::cout << "\033[1A\033[2K\r"; // Xóa dòng vừa gõ
+                }
 
-            std::cout << pad << MauSacVanPhong::CAM << "||  " << MauSacVanPhong::RESET
-                << MauSacVanPhong::DO << msg << MauSacVanPhong::RESET
-                << std::string(lePhaiLoi, ' ')
-                << MauSacVanPhong::CAM << "||\n" << MauSacVanPhong::RESET;
+                int doDaiDuLieu = static_cast<int>(chuoiNhap.length());
+                int khoangDemPhai = 32 - doDaiDuLieu;
+                if (khoangDemPhai < 0) khoangDemPhai = 0;
+
+                std::cout << pad
+                    << MauSacVanPhong::CAM << "||  " << MauSacVanPhong::RESET
+                    << mau << std::left << std::setw(26) << nhan
+                    << ": " << MauSacVanPhong::RESET
+                    << MauSacVanPhong::TRANG << chuoiNhap << MauSacVanPhong::RESET
+                    << std::string(khoangDemPhai, ' ')
+                    << MauSacVanPhong::CAM << "||\n" << MauSacVanPhong::RESET;
+                break;
+            }
+
+            if (coLoi) {
+                std::cout << "\033[1A\033[2K\r";
+                std::cout << "\033[1A\033[2K\r";
+            }
+            else {
+                std::cout << "\033[1A\033[2K\r";
+            }
+
+            std::string msg = "Gia tri tu " + std::to_string(minVal) + " den " + std::to_string(maxVal) + "!";
+            std::cout << pad << "    " << MauSacVanPhong::DO << ">> " << msg << MauSacVanPhong::RESET << "\n";
+            coLoi = true;
         }
-        };
+    };
 
     inVaDocSo(MauSacVanPhong::CAM, "So ngay lam viec", 0, 31, soNgayLamViec_);
     inVaDocSo(MauSacVanPhong::HONG, "Don gia ngay (VND)", 200000, 500000, donGiaNgay_);
     inVaDocSo(MauSacVanPhong::XANH_LA_SANG, "So gio tang ca (OT)", 0, 40, soGioTangCa_);
 
-    // Day khep kin hop thong tin
     std::cout << pad
         << MauSacVanPhong::CAM
         << "++" << std::string(KHOANG_TRONG, '=') << "++\n"
