@@ -816,7 +816,7 @@ void QuanLyNhanSu::thoatChuongTrinh() {
     inDongCanGiuaKhung(MauSacNhanSu::RESET, "");
 
     // 4. Noi dung loi cam on
-    inDongCanGiuaKhung(MauSacNhanSu::VANG + MauSacNhanSu::DAM, "Cam on ban da su dung HE THONG QUAN LY NHAN SU C++!");
+    inDongCanGiuaKhung(MauSacNhanSu::VANG + MauSacNhanSu::DAM, "Cam on ban da su dung HE THONG QUAN LY NHAN SU!");
     inDongCanGiuaKhung(MauSacNhanSu::CAM, "Chuc ban mot ngay hoc tap va lam viec that tot!");
 
     // Khoang trong dem duoi
