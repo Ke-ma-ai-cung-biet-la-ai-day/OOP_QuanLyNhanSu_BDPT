@@ -828,7 +828,7 @@ void QuanLyNhanSu::thoatChuongTrinh() {
         << MauSacNhanSu::RESET;
 
     // 6. Trang thai ky thuat (Do dai 48 ky tu -> leTrai = lePhai = 7 khoang trang)
-    inDongCanGiuaKhung(MauSacNhanSu::XANH_LA, "Trang thai: Da giai phong tai nguyen & luu an toan.");
+    inDongCanGiuaKhung(MauSacNhanSu::XANH_LA, "Da thoat chuong trinh.");
 
     // 7. Thong tin phien ban & nhom BDPT (Do dai 42 ky tu -> leTrai = lePhai = 10 khoang trang)
     inDongCanGiuaKhung(MauSacNhanSu::TRANG + MauSacNhanSu::DAM, "Phien ban: 1.0.0 | Phat trien boi Nhom BDPT");
