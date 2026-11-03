@@ -59,15 +59,13 @@ namespace {
 // KHỞI TẠO (TỰ NẠP FILE) & HỦY
 // ==========================================
 
-QuanLyNhanSu::QuanLyNhanSu() {
+QuanLyNhanSu::QuanLyNhanSu() : duongDanFile_("NhanVien.txt") {
     std::ifstream kiemTra("Data/NhanVien.txt");
     if (kiemTra.is_open()) {
         kiemTra.close();
-        napDuLieuTuFile("Data/NhanVien.txt");
+        duongDanFile_ = "Data/NhanVien.txt";
     }
-    else {
-        napDuLieuTuFile("NhanVien.txt");
-    }
+    napDuLieuTuFile(duongDanFile_);
 }
 
 QuanLyNhanSu::~QuanLyNhanSu() {
@@ -144,6 +142,8 @@ void QuanLyNhanSu::themNhanVien(NhanVien* nhanVien) {
     }
     dsNhanVien_.push_back(nhanVien);
     sapXepDanhSach();
+
+    luuDuLieuVaoFile();
 }
 
 bool QuanLyNhanSu::kiemTraTrungMa(const std::string& maNhanVien) const {
@@ -158,8 +158,8 @@ void QuanLyNhanSu::giaoDienKetQuaXoa(QuanLyNhanSu& quanLy, std::string& maNhanVi
     inTieuDeManHinh("XOA NHAN VIEN THEO MA");
 
     const int CHIEU_RONG_KHUNG = 66;
-    const int LE_CAN_GIUA = (DO_RONG_MAN_HINH - CHIEU_RONG_KHUNG) / 2; // 38 khoang trang
-    const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;                     // 62 ky tu long khung
+    const int LE_CAN_GIUA = (DO_RONG_MAN_HINH - CHIEU_RONG_KHUNG) / 2; 
+    const int KHOANG_TRONG = CHIEU_RONG_KHUNG - 4;                     
     const std::string pad(LE_CAN_GIUA, ' ');
 
     auto inThongBaoCanGiua = [](const std::string& mau, const std::string& text) {
@@ -265,6 +265,8 @@ bool QuanLyNhanSu::xoaNhanVien(const std::string& maNhanVien) {
         if ((*it)->getMaNhanVien() == maNhanVien) {
             delete* it;
             dsNhanVien_.erase(it);
+
+            luuDuLieuVaoFile();
             return true;
         }
     }
@@ -771,7 +773,8 @@ void QuanLyNhanSu::sapXepDanhSach() {
 // ==========================================
 
 void QuanLyNhanSu::thoatChuongTrinh() {
-    giaiPhongBoNho(); // Giai phong toan bo bo nho cap phat dong
+    luuDuLieuVaoFile();
+    giaiPhongBoNho();
 
     // Don sach man hinh console
 #ifdef _WIN32
@@ -911,25 +914,74 @@ void QuanLyNhanSu::boQuaDongThua() {
 }
 
 bool QuanLyNhanSu::docSoNguyen(const std::string& thongBao, int tuGiaTri, int denGiaTri, int& ketQua) {
+    bool coLoiTruocDo = false;
+
+    auto inThongBaoCanGiua = [](const std::string& mau, const std::string& text) {
+        int le = (DO_RONG_MAN_HINH - static_cast<int>(text.length())) / 2;
+        if (le < 0) le = 0;
+        std::cout << std::string(le, ' ') << mau << text << MauSacNhanSu::RESET << "\n";
+        };
+
     while (true) {
         std::cout << thongBao;
-            int giaTri = 0;
-            if (std::cin >> giaTri) {
-                boQuaDongThua(); 
-                    if (giaTri >= tuGiaTri && giaTri <= denGiaTri) {
-                        ketQua = giaTri; 
-                            return true; 
-                    }
-                std::cout << "Gia tri phai nam trong khoang [" << tuGiaTri << ", " << denGiaTri << "].\n"; 
+        int giaTri = 0;
+
+        if (std::cin >> giaTri) {
+            boQuaDongThua();
+            if (giaTri >= tuGiaTri && giaTri <= denGiaTri) {
+                // Nhap dung: Neu truoc do tung co loi, xoa sach dung 4 dong loi ben duoi
+                if (coLoiTruocDo) {
+                    std::cout << "\033[1A\033[2K\r"; // 1. Xoa dong vua nhap thanh cong
+                    std::cout << "\033[1A\033[2K\r"; // 2. Xoa dong trong dem tren cau nhac
+                    std::cout << "\033[1A\033[2K\r"; // 3. Xoa dong thong bao loi mau do
+                    std::cout << "\033[1A\033[2K\r"; // 4. Xoa dong trong dem tren chu do
+                    // In lai dong nhap dung vao dung vi tri ban dau
+                    std::cout << thongBao << giaTri << "\n";
+                }
+                ketQua = giaTri;
+                return true;
+            }
+
+            // Nhap so ngoai khoang [tuGiaTri, denGiaTri]
+            if (coLoiTruocDo) {
+                std::cout << "\033[1A\033[2K\r"; // 1. Xoa dong vua nhap sai
+                std::cout << "\033[1A\033[2K\r"; // 2. Xoa dong trong dem tren cau nhac
+                std::cout << "\033[1A\033[2K\r"; // 3. Xoa dong loi do cu
+                std::cout << "\033[1A\033[2K\r"; // 4. Xoa dong trong tren chu do
             }
             else {
-                if (std::cin.eof()) {
-                    return false;
-                }
-                std::cin.clear();
-                    boQuaDongThua();
-                    std::cout << "Du lieu khong hop le, vui long nhap so nguyen.\n";
+                std::cout << "\033[1A\033[2K\r"; // Lan dau go sai: chi xoa dong vua go sai
             }
+
+            std::string msg = "LUA CHON PHAI NAM TRONG KHOANG TU " + std::to_string(tuGiaTri) + " DEN " + std::to_string(denGiaTri) + "!";
+            std::cout << "\n";
+            inThongBaoCanGiua(MauSacNhanSu::DO + MauSacNhanSu::DAM, msg);
+            std::cout << "\n";
+            coLoiTruocDo = true;
+        }
+        else {
+            if (std::cin.eof()) {
+                return false;
+            }
+            std::cin.clear();
+            boQuaDongThua();
+
+            // Nhap sai kieu du lieu (chu, ky tu dac biet)
+            if (coLoiTruocDo) {
+                std::cout << "\033[1A\033[2K\r"; // 1. Xoa dong chu vua go sai
+                std::cout << "\033[1A\033[2K\r"; // 2. Xoa dong trong dem
+                std::cout << "\033[1A\033[2K\r"; // 3. Xoa dong loi cu
+                std::cout << "\033[1A\033[2K\r"; // 4. Xoa dong trong tren chu do
+            }
+            else {
+                std::cout << "\033[1A\033[2K\r"; // Lan dau go sai: xoa dong chu vua go
+            }
+
+            std::cout << "\n";
+            inThongBaoCanGiua(MauSacNhanSu::DO + MauSacNhanSu::DAM, "DU LIEU KHONG HOP LE, VUI LONG NHAP SO NGUYEN!");
+            std::cout << "\n";
+            coLoiTruocDo = true;
+        }
     }
 }
 
@@ -984,9 +1036,9 @@ void QuanLyNhanSu::inTieuDeManHinh(const std::string& tieuDe) {
         << MauSacNhanSu::RESET << "\n";
 }
 
-// ==========================================
-// HELPER: NẠP DỮ LIỆU TỰ ĐỘNG TỪ FILE
-// ==========================================
+// ==============================================
+// HELPER: NẠP DỮ LIỆU TỰ ĐỘNG TỪ FILE / LƯU FILE
+// ==============================================
 
 void QuanLyNhanSu::napDuLieuTuFile(const std::string& tenFile) {
     std::ifstream file(tenFile);
@@ -1043,6 +1095,78 @@ void QuanLyNhanSu::napDuLieuTuFile(const std::string& tenFile) {
 
     file.close();
     std::cout << "=> Da tu dong nap san " << demThanhCong << " nhan vien tu file '" << tenFile << "' vao he thong.\n";
+}
+void QuanLyNhanSu::luuDuLieuVaoFile(const std::string& tenFile) const {
+    // Danh sách các đường dẫn cần đồng bộ dữ liệu
+    std::vector<std::string> danhSachFile;
+    if (!tenFile.empty()) {
+        danhSachFile.push_back(tenFile);
+    }
+    else {
+        danhSachFile.push_back("Data/NhanVien.txt");
+        danhSachFile.push_back("NhanVien.txt");
+    }
+
+    std::vector<const NhanVienVanPhong*> vanPhong;
+    std::vector<const NhanVienSanXuat*> sanXuat;
+    std::vector<const QuanLy*> quanLy;
+
+    for (const NhanVien* nv : dsNhanVien_) {
+        if (const NhanVienVanPhong* vp = dynamic_cast<const NhanVienVanPhong*>(nv)) {
+            vanPhong.push_back(vp);
+        }
+        else if (const NhanVienSanXuat* sx = dynamic_cast<const NhanVienSanXuat*>(nv)) {
+            sanXuat.push_back(sx);
+        }
+        else if (const QuanLy* ql = dynamic_cast<const QuanLy*>(nv)) {
+            quanLy.push_back(ql);
+        }
+    }
+
+    for (const std::string& duongDan : danhSachFile) {
+        std::ofstream file(duongDan);
+        if (!file.is_open()) continue;
+
+        if (!vanPhong.empty()) {
+            file << "[VAN_PHONG]\n";
+            for (const auto* vp : vanPhong) {
+                file << vp->getMaNhanVien() << "|"
+                    << vp->getHoTen() << "|"
+                    << vp->getNgaySinh() << "|"
+                    << vp->getDiaChi() << "|"
+                    << vp->getSoNgayLamViec() << "|"
+                    << vp->getDonGiaNgay() << "|"
+                    << vp->getSoGioTangCa() << "\n";
+            }
+        }
+
+        if (!sanXuat.empty()) {
+            file << "\n[SAN_XUAT]\n";
+            for (const auto* sx : sanXuat) {
+                file << sx->getMaNhanVien() << "|"
+                    << sx->getHoTen() << "|"
+                    << sx->getNgaySinh() << "|"
+                    << sx->getDiaChi() << "|"
+                    << sx->getSoSanPham() << "|"
+                    << sx->getDonGiaSanPham() << "\n";
+            }
+        }
+
+        if (!quanLy.empty()) {
+            file << "\n[QUAN_LY]\n";
+            for (const auto* ql : quanLy) {
+                file << ql->getMaNhanVien() << "|"
+                    << ql->getHoTen() << "|"
+                    << ql->getNgaySinh() << "|"
+                    << ql->getDiaChi() << "|"
+                    << ql->getLuongCoBan() << "|"
+                    << ql->getLuongTrachNhiem() << "|"
+                    << ql->getHeSoChucVu() << "\n";
+            }
+        }
+
+        file.close();
+    }
 }
 
 // ==========================================

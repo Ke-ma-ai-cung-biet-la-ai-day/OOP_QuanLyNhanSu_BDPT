@@ -14,6 +14,7 @@ class QuanLy;
 class QuanLyNhanSu {
 private:
     std::vector<NhanVien*> dsNhanVien_;
+    std::string duongDanFile_;
 
     // Chặn sao chép đối tượng
     QuanLyNhanSu(const QuanLyNhanSu&) = delete;
@@ -21,6 +22,8 @@ private:
 
     // Helper: Nạp dữ liệu tự động từ file lúc khởi tạo
     void napDuLieuTuFile(const std::string& tenFile = "NhanVien.txt");
+    // Helper: Tự động lưu dữ liệu ra file khi có thay đổi (Thêm/Xóa)
+    void luuDuLieuVaoFile(const std::string& tenFile = "") const;
 
     // Helper: Chức năng Thêm mới
     static NhanVien* taoNhanVienTheoLoai(int loai);
