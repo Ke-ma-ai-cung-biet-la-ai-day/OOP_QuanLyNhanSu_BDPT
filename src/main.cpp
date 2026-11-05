@@ -97,7 +97,7 @@ void xoaManHinh() {
 }
 
 int main() {
-    // Khoi tao doi tuong, tu dong doc file NhanVien.txt[cite: 55]
+    // Khoi tao doi tuong, tu dong doc file NhanVien.txt
     QuanLyNhanSu ql;
 
         // Lambda can giua dong thong bao loi dua tren chieu rong chuan 142
