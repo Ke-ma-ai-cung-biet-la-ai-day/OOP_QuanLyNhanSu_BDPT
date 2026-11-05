@@ -39,7 +39,7 @@ namespace {
     const int DO_RONG_THOAT = CHIEU_RONG_CHUAN;
 
     const int SO_COT = 8;
-    const int DO_RONG_COT[SO_COT] = { 14, 20, 12, 16, 14, 14, 20, 15 };
+    const int DO_RONG_COT[SO_COT] = { 14, 20, 12, 16, 14, 14, 19, 16 };
 
     const int LOAI_VAN_PHONG = 1;
     const int LOAI_SAN_XUAT = 2;
@@ -545,7 +545,7 @@ void QuanLyNhanSu::inDauNhom(const std::string& tieuDe, const std::string& cot5,
         << "|-" << std::string(14, '-') << "|-" << std::string(20, '-')
         << "|-" << std::string(12, '-') << "|-" << std::string(16, '-')
         << "|-" << std::string(14, '-') << "|-" << std::string(14, '-')
-        << "|-" << std::string(20, '-') << "|-" << std::string(15, '-') << "|\n"
+        << "|-" << std::string(19, '-') << "|-" << std::string(16, '-') << "|\n"
         << MauSacNhanSu::RESET;
 }
 
@@ -852,18 +852,37 @@ void QuanLyNhanSu::thoatChuongTrinh() {
 
 void QuanLyNhanSu::inHangBang(const std::vector<std::string>& cacCot) {
     for (int i = 0; i < SO_COT; ++i) {
-        if (i == SO_COT - 1) {
-            int doDai = static_cast<int>(cacCot[i].length());
-            if (doDai >= DO_RONG_COT[i]) {
-                std::cout << MauSacNhanSu::XANH_CYAN << "| " << MauSacNhanSu::RESET
-                    << std::left << std::setw(DO_RONG_COT[i]) << cacCot[i];
+        bool laCotTien = false;
+
+        // Chỉ xét căn phải khi ô có dữ liệu và bắt đầu bằng chữ số (loại trừ toàn bộ các chuỗi tiêu đề chữ)
+        if (!cacCot[i].empty() && (cacCot[i][0] >= '0' && cacCot[i][0] <= '9')) {
+            if (i == SO_COT - 1) {
+                // Cột 8: Thực nhận (luôn là số tiền)
+                laCotTien = true;
             }
-            else {
-                std::cout << MauSacNhanSu::XANH_CYAN << "| " << MauSacNhanSu::RESET
-                    << std::right << std::setw(DO_RONG_COT[i] - 1) << cacCot[i] << " ";
+            else if (i == 4) {
+                // Cột 5: Lương cơ bản của Quản lý (chứa số tiền, không chứa chữ "ngay" hay "SP")
+                if (cacCot[i].find("ngay") == std::string::npos && cacCot[i].find("SP") == std::string::npos) {
+                    laCotTien = true;
+                }
+            }
+            else if (i == 6) {
+                // Cột 7: Lương trách nhiệm của Quản lý (chuỗi số tiền phân cách dấu phẩy hoặc chấm, >= 7 ký tự)
+                // Phân biệt với hệ số KPI dạng "1.20" hay "0.85" (chỉ dài 4 ký tự)
+                if (cacCot[i].length() >= 7) {
+                    laCotTien = true;
+                }
             }
         }
+
+        if (laCotTien) {
+            // Dữ liệu số tiền: Căn lề phải, để lại đúng 1 khoảng trống trước vạch viền '|'
+            std::cout << MauSacNhanSu::XANH_CYAN << "| " << MauSacNhanSu::RESET
+                << std::right << std::setw(DO_RONG_COT[i] - 1) << cacCot[i] << " ";
+        }
         else {
+            // Toàn bộ tiêu đề ("Luong co ban", "Luong trach nhiem", "Thuc nhan (VND)")
+            // cùng các cột thông tin chữ, ngày công, sản phẩm, KPI: Căn lề trái bình thường
             std::cout << MauSacNhanSu::XANH_CYAN << "| " << MauSacNhanSu::RESET
                 << std::left << std::setw(DO_RONG_COT[i]) << cacCot[i];
         }
