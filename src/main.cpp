@@ -18,7 +18,7 @@ namespace MauSac {
 
 void hienThiMenu() {
     const int CHIEU_RONG = 142;
-    const int KHOANG_TRONG = CHIEU_RONG - 4; // 138 ky tu ben trong 2 bien '||'
+    const int KHOANG_TRONG = CHIEU_RONG - 4; 
 
     auto inDongVienNgang = [&]() {
         std::cout << MauSac::XANH_CYAN
@@ -39,7 +39,7 @@ void hienThiMenu() {
         };
 
     const int DO_RONG_KHOI = 26;
-    const int LE_KHOI = (KHOANG_TRONG - DO_RONG_KHOI) / 2; // 56 khoang trang
+    const int LE_KHOI = (KHOANG_TRONG - DO_RONG_KHOI) / 2; 
     const int DEM_PHAI = KHOANG_TRONG - LE_KHOI - DO_RONG_KHOI;
 
     auto inDongLuaChon = [&](const std::string& mauChu, const std::string& text) {
@@ -75,7 +75,6 @@ void hienThiMenu() {
         << MauSac::RESET;
 }
 
-// Ham dung cho nhan Enter
 void dungManHinhChoEnter() {
     const std::string cauNhac = ">> Nhan Enter de ve Menu chinh...";
     const int le = (142 - static_cast<int>(cauNhac.length())) / 2;
@@ -87,7 +86,7 @@ void dungManHinhChoEnter() {
     std::getline(std::cin, boDem);
 }
 
-// Ham don sach man hinh console
+//Ham don sach man hinh console
 void xoaManHinh() {
 #ifdef _WIN32
     std::system("cls");
@@ -97,10 +96,7 @@ void xoaManHinh() {
 }
 
 int main() {
-    // Khoi tao doi tuong, tu dong doc file NhanVien.txt
     QuanLyNhanSu ql;
-
-        // Lambda can giua dong thong bao loi dua tren chieu rong chuan 142
         auto inLoiCanGiua = [](const std::string& thongBao) {
         const int CHIEU_RONG = 142;
         int le = (CHIEU_RONG - static_cast<int>(thongBao.length())) / 2;
@@ -117,7 +113,6 @@ int main() {
                         std::string dem; 
                         std::getline(std::cin, dem); 
 
-                        // Can giua khi nguoi dung nhap chu hoac ky tu dac biet
                         inLoiCanGiua("LUA CHON KHONG HOP LE, VUI LONG NHAP SO TU 1 DEN 5!");
                     dungManHinhChoEnter();
                     xoaManHinh();
@@ -156,12 +151,10 @@ int main() {
                     std::cout << MauSac::RESET;
                     return 0; 
                 default: 
-                    // Can giua khi nguoi dung nhap so ngoai khoang 1-5 (vi du: 0, 6, 99...)
                     inLoiCanGiua("LUA CHON PHAI NAM TRONG KHOANG TU 1 DEN 5!");
                     break; 
                 }
 
-            // Cho nguoi dung doc ket qua xong nhan Enter moi xoa man hinh ve Menu
             dungManHinhChoEnter();
             xoaManHinh();
         } 

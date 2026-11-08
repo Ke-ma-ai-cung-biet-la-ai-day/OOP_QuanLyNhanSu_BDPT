@@ -109,9 +109,9 @@ void QuanLy::nhap(std::istream& in) {
         };
 
     // Su dung duy nhat 1 ham cho ca 3 thuoc tinh
-    inVaDocSo(luongCoBan_, MauSacQuanLy::CAM, "Luong co ban (VND)", 10000000, 20000000, "Luong tu 10.000.000 den 20.000.000!");
+    inVaDocSo(luongCoBan_, MauSacQuanLy::CAM, "Luong co ban (VND)", 10000000, 20000000, "Luong co ban tu 10000000 den 20000000!");
     inVaDocSo(heSoChucVu_, MauSacQuanLy::VANG_SANG, "He so chuc vu", 1.2, 2.5, "He so chuc vu tu 1.2 den 2.5!", true);
-    inVaDocSo(luongTrachNhiem_, MauSacQuanLy::HONG, "Luong trach nhiem (VND)", 2000000, 8000000, "Luong tu 2.000.000 den 8.000.000!");
+    inVaDocSo(luongTrachNhiem_, MauSacQuanLy::HONG, "Luong trach nhiem (VND)", 2000000, 8000000, "Luong trach nhiem tu 2000000 den 80000000!");
 
     // Dong day hop
     std::cout << pad
