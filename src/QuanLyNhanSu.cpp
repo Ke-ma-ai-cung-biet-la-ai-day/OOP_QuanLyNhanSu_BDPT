@@ -852,37 +852,24 @@ void QuanLyNhanSu::thoatChuongTrinh() {
 
 void QuanLyNhanSu::inHangBang(const std::vector<std::string>& cacCot) {
     for (int i = 0; i < SO_COT; ++i) {
-        bool laCotTien = false;
+        bool laThongTinSo = false;
 
-        // Chỉ xét căn phải khi ô có dữ liệu và bắt đầu bằng chữ số (loại trừ toàn bộ các chuỗi tiêu đề chữ)
-        if (!cacCot[i].empty() && (cacCot[i][0] >= '0' && cacCot[i][0] <= '9')) {
-            if (i == SO_COT - 1) {
-                // Cột 8: Thực nhận (luôn là số tiền)
-                laCotTien = true;
-            }
-            else if (i == 4) {
-                // Cột 5: Lương cơ bản của Quản lý (chứa số tiền, không chứa chữ "ngay" hay "SP")
-                if (cacCot[i].find("ngay") == std::string::npos && cacCot[i].find("SP") == std::string::npos) {
-                    laCotTien = true;
-                }
-            }
-            else if (i == 6) {
-                // Cột 7: Lương trách nhiệm của Quản lý (chuỗi số tiền phân cách dấu phẩy hoặc chấm, >= 7 ký tự)
-                // Phân biệt với hệ số KPI dạng "1.20" hay "0.85" (chỉ dài 4 ký tự)
-                if (cacCot[i].length() >= 7) {
-                    laCotTien = true;
-                }
-            }
+        // Bất kỳ ô dữ liệu nào bắt đầu bằng chữ số (0-9) đều là thông tin số:
+        // Ngày công ("22 ngay"), giờ OT ("10 gio"), sản phẩm ("115 SP"),
+        // định mức ("100 SP"), KPI ("1.20"), hệ số chức vụ ("1.80"), tiền lương ("9,500,000")
+        // Lưu ý: Các tiêu đề chữ ("Ngay cong", "Gio tang ca",...) bắt đầu bằng chữ cái nên tự động căn trái.
+        // Cột ngày sinh "15/03/1992" là ngày tháng (i == 2), nếu muốn giữ căn trái thì loại trừ i == 2.
+        if (i != 2 && !cacCot[i].empty() && (cacCot[i][0] >= '0' && cacCot[i][0] <= '9')) {
+            laThongTinSo = true;
         }
 
-        if (laCotTien) {
-            // Dữ liệu số tiền: Căn lề phải, để lại đúng 1 khoảng trống trước vạch viền '|'
+        if (laThongTinSo) {
+            // Dữ liệu số: Căn lề phải, chừa đúng 1 khoảng trống trước vạch viền đứng '|'
             std::cout << MauSacNhanSu::XANH_CYAN << "| " << MauSacNhanSu::RESET
                 << std::right << std::setw(DO_RONG_COT[i] - 1) << cacCot[i] << " ";
         }
         else {
-            // Toàn bộ tiêu đề ("Luong co ban", "Luong trach nhiem", "Thuc nhan (VND)")
-            // cùng các cột thông tin chữ, ngày công, sản phẩm, KPI: Căn lề trái bình thường
+            // Dữ liệu chữ (Mã NV, Họ tên, Ngày sinh, Địa chỉ và toàn bộ dòng Tiêu đề): Căn lề trái
             std::cout << MauSacNhanSu::XANH_CYAN << "| " << MauSacNhanSu::RESET
                 << std::left << std::setw(DO_RONG_COT[i]) << cacCot[i];
         }
