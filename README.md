@@ -30,7 +30,8 @@ OOP_QuanLyNhanSu_BDPT/
 └── README.md                      # Tài liệu giới thiệu & hướng dẫn cài đặt đồ án
 ```
 
-QuanLyChuyenBayNoiDia
+```text
+QuanLyChuyenBayNoiDia/
 │
 ├── data/                               # Cơ sở dữ liệu dạng văn bản và tệp lưu trữ thông tin vé
 │   ├── DATA_VE/                        # Thư mục chứa các phiếu thông tin vé riêng lẻ (<MãVé>.txt)
@@ -63,6 +64,7 @@ QuanLyChuyenBayNoiDia
 │   └── main.cpp                        # Điểm khởi chạy và điều phối luồng hoạt động chính của chương trình
 │                            
 └── README.md                           # Giới thiệu chương trình hệ thống và hướng dẫn biên dịch, cài đặt
+```
 
 HƯỚNG DẪN QUY TRÌNH LÀM VIỆC GITHUB:
 1. Lấy toàn bộ code mới nhất về máy: git pull origin main
